@@ -39,6 +39,10 @@ public final class AppCore implements AutoCloseable {
 	}
 
 	public void swapLines(int firstLine, int secondLine) throws IndexOutOfBoundsException, IllegalStateException {
+		if (firstLine == secondLine) {
+			return;
+		}
+
 		try {
 			Line temp = lines[firstLine];
 			lines[firstLine] = lines[secondLine];
