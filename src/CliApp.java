@@ -19,12 +19,30 @@ public final class CliApp {
             try (AppCore appCore = new AppCore(input.nextLine())) {
                 appCore.swapLines(0, 1);
             } catch (FileNotFoundException exception) {
-                continue;
+                if (!continueUsing("Cannot open specified file.\nWould you like to try with another file?")) {
+                    break;
+                }
             } catch (SecurityException exception) {
                 System.out.println("Cannot operate on file die to security exception!");
             }
-            
-            break;
+        }
+    }
+
+    private static boolean continueUsing(String message) {
+        System.out.print(message);
+        // Not needed anymore.
+        message = null;
+
+        System.out.println(" (Y)es / (N)o");
+
+        while (true) {
+            String choice = input.nextLine().trim().toLowerCase();
+
+            if (choice.equals("y") || choice.equals("yes")) {
+                return true;
+            } else if (choice.equals("n") || choice.equals("no")) {
+                return false;
+            }
         }
     }
 }
