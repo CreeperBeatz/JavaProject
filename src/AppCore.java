@@ -19,7 +19,7 @@ public final class AppCore implements AutoCloseable {
 	 * @throws SecurityException
 	 * @throws InvalidContentException
 	 */
-	public AppCore(String filename) throws FileNotFoundException, SecurityException, InvalidContentException {
+	public AppCore(String filename) throws FileNotFoundException, SecurityException {
 		super();
 
 		this.filename = filename;

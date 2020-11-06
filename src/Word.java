@@ -28,13 +28,6 @@ public final class Word {
 		return length;
 	}
 
-	public void setLength(int length) throws NegativeArraySizeException {
-		if (length < 0) {
-			throw new NegativeArraySizeException();
-		}
-		this.length = length;
-	}
-
 	public void offsetWord(int offset) throws IndexOutOfBoundsException {
 		if (this.offset + offset < 0) {
 			throw new IndexOutOfBoundsException(this.offset + offset);
@@ -42,7 +35,13 @@ public final class Word {
 		this.offset += offset;
 	}
 
-	public String getWord(String line) throws IndexOutOfBoundsException {
+	public void swapLengths(Word other) throws NullPointerException {
+		int temp = length;
+		length = other.length;
+		other.length = temp;
+	}
+
+	public String getWord(String line) throws NullPointerException, IndexOutOfBoundsException {
 		return line.substring(getStartOffset(), getEndOffset());
 	}
 

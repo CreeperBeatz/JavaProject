@@ -28,10 +28,8 @@ public final class FileReader {
 	 * Read one line of the file.
 	 * @return A line from the file or a null reference when
 	 * the file is marked as finished.
-	 * @throws InvalidContentException This is thrown in case the file contains
-	 * content that is not alphanumeric.
 	 */
-	public Line getLine() throws InvalidContentException {
+	public Line getLine() {
 		if (isFinished()) {
 			return null;
 		} else {
@@ -48,10 +46,8 @@ public final class FileReader {
 	/**
 	 * Reads the file until End-Of-File (EOF) is encountered.
 	 * @return List of the lines from the file.
-	 * @throws InvalidContentException This is thrown in case the file contains
-	 * content that is not alphanumeric.
 	 */
-	public Line[] getLines() throws InvalidContentException {
+	public Line[] getLines() {
 		ArrayList<Line> list = new ArrayList<Line>();
 
 		while (!isFinished()) {

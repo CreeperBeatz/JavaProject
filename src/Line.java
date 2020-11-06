@@ -1,31 +1,12 @@
-import java.util.regex.Pattern;
-
 /**
- * Represents line that is verified to have valid content.
+ * Represents a line.
  */
 public final class Line {
 	private String line;
 	private Word[] words;
-	private static final Pattern wordsPattern;
-
-	static {
-		wordsPattern = Pattern.compile("^[\\w\\s]*$");
-	}
 	
-	/**
-	 * Contructs new instance of the class while verifying the
-	 * content of the line.
-	 * @param line - String
-	 * @throws InvalidContentException This exception is thrown
-	 * when the line contains content that is not alphanumeric.
-	 */
-	public Line(String line) throws InvalidContentException {
+	public Line(String line) {
 		super();
-
-		// Verify contents of the file.
-		if (!wordsPattern.matcher(line).matches()) {
-			throw new InvalidContentException();
-		}
 
 		this.line = line;
 		words = new Word[0];
@@ -35,56 +16,138 @@ public final class Line {
 		return line;
 	}
 
-	public void swapWords(Line other, int own_word_index, int other_word_index) throws IndexOutOfBoundsException {
+	public void swapWords(Line other, int ownWordIndex, int otherWordIndex) throws IndexOutOfBoundsException {
 		// Compare addresses to check whether it's the same object.
 		if (this == other) {
-			final int min, max;
-
-			if (own_word_index < other_word_index) {
-				min = own_word_index;
-				max = other_word_index;
-			} else {
-				min = other_word_index;
-				max = own_word_index;
-			}
-
-			if (words.length < max + 1) {
-				this.words = LineParser.getWords(this, max + 1);
-			}
-
-			Word left_word = words[min], right_word = words[max];
-
-			// Compare addresses to check whether it's the same word.
-			if (left_word == right_word) {
+			if (ownWordIndex == otherWordIndex) {
 				// No more actions required.
 				return;
 			}
 
-			final int delta = right_word.getLength() - left_word.getLength();
+			final int leftIndex, rightIndex;
 
-			StringBuilder builder = new StringBuilder(line);
-			
-			builder.insert(left_word.getEndOffset(), right_word.getWord(line));
+			// Find which index is for the left word and which for the right one.
+			if (ownWordIndex < otherWordIndex) {
+				leftIndex = ownWordIndex;
+				rightIndex = otherWordIndex;
+			} else {
+				leftIndex = otherWordIndex;
+				rightIndex = ownWordIndex;
+			}
 
-			right_word.offsetWord(right_word.getLength());
+			// Check whether the word map is already generated until the right word's index.
+			if (words.length < rightIndex + 1) {
+				this.words = LineParser.getWords(this, rightIndex + 1);
+			}
 
-			builder.replace(right_word.getStartOffset(), right_word.getEndOffset(), left_word.getWord(line));
+			// Will throw an "IndexOutOfBoundsException" in case the word count is smaller.
+			// It is annotated that it can throw it.
+			Word leftWord = words[leftIndex], rightWord = words[rightIndex];
 
-			builder.replace(left_word.getStartOffset(), left_word.getEndOffset(), "");
+			{
+				// Create new string builder with capacity equal to the string's length.
+				StringBuilder builder = new StringBuilder(line.length());
 
-			right_word.offsetWord(-left_word.getLength());
+				// Build string from parts.
+				builder.append(line.substring(0, leftWord.getStartOffset()));
+				builder.append(rightWord.getWord(line));
+				builder.append(line.substring(leftWord.getEndOffset(), rightWord.getStartOffset()));
+				builder.append(leftWord.getWord(line));
+				builder.append(line.substring(rightWord.getEndOffset()));
 
-			int temp = left_word.getLength();
+				line = builder.toString();
 
-			left_word.setLength(right_word.getLength());
+				// Free the string builder.
+			}
 
-			right_word.setLength(temp);
+			// Calculate the delta of the word lengths.
+			final int delta = rightWord.getLength() - leftWord.getLength();
 
-			for (int z = min + 1; z < max; ++z) {
+			// Adjust the offset of the right word.
+			rightWord.offsetWord(delta);
+
+			// Swap words' lengths.
+			leftWord.swapLengths(rightWord);
+
+			// Adjust the offsets of the words between the two, if any.
+			// The other words' offsets will stay correct.
+			for (int z = leftIndex + 1; z < rightIndex; ++z) {
+				words[z].offsetWord(delta);
+			}
+		} else {
+			// Check whether the word map is already generated until the word's index.
+			if (words.length < ownWordIndex + 1) {
+				this.words = LineParser.getWords(this, ownWordIndex + 1);
+			}
+
+			// Check whether the word map is already generated until the word's index.
+			if (other.words.length < otherWordIndex + 1) {
+				other.words = LineParser.getWords(other, otherWordIndex + 1);
+			}
+
+			// Will throw an "IndexOutOfBoundsException" in case the word count is smaller.
+			// It is annotated that it can throw it.
+			Word ownWord = words[ownWordIndex], otherWord = other.words[otherWordIndex];
+
+			// Calculate the delta of the word lengths.
+			final int delta = otherWord.getLength() - ownWord.getLength();
+
+			String ownWordString = ownWord.getWord(line), otherWordString = otherWord.getWord(other.line);
+
+			// When delta is not equal to zero (0), the two words cannot be equal.
+			if (delta == 0) {
+				if (ownWordString.equals(otherWordString)) {
+					return;
+				}
+			}
+
+			{
+				// Create new string builder with capacity equal to the string's length plus the delta.
+				StringBuilder ownBuilder = new StringBuilder(line.length() + delta);
+
+				ownBuilder.append(line.substring(0, ownWord.getStartOffset()));
+
+				ownBuilder.append(otherWordString);
+				// Not needed anymore.
+				otherWordString = null;
+
+				ownBuilder.append(line.substring(ownWord.getEndOffset()));
+
+				line = ownBuilder.toString();
+
+				// Free the string builder.
+			}
+
+			// Adjust the offsets of the words after the word, if any.
+			// The words' offsets before it will stay correct.
+			for (int z = ownWordIndex + 1; z < words.length; ++z) {
 				words[z].offsetWord(delta);
 			}
 
-			line = builder.toString();
+			{
+				// Create new string builder with capacity equal to the string's length plus the delta.
+				StringBuilder otherBuilder = new StringBuilder(other.line.length() - delta);
+
+				otherBuilder.append(other.line.substring(0, otherWord.getStartOffset()));
+
+				otherBuilder.append(ownWordString);
+				// Not needed anymore.
+				ownWordString = null;
+
+				otherBuilder.append(other.line.substring(otherWord.getEndOffset()));
+
+				other.line = otherBuilder.toString();
+
+				// Free the string builder.
+			}
+
+			// Adjust the offsets of the words after the word, if any.
+			// The words' offsets before it will stay correct.
+			for (int z = otherWordIndex + 1; z < other.words.length; ++z) {
+				words[z].offsetWord(-delta);
+			}
+
+			ownWord.swapLengths(otherWord);
 		}
 	}
 
