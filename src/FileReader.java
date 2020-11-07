@@ -55,6 +55,9 @@ public final class FileReader {
 			list.add(getLine());
 		}
 
+		// Add one empty line in case the "Scanner" skipped it.
+		list.add(new Line(""));
+
 		return list.toArray(Line[]::new);
 	}
 
