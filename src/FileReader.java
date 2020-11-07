@@ -1,5 +1,6 @@
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -29,7 +30,7 @@ public final class FileReader {
 	 * @return A line from the file or a null reference when
 	 * the file is marked as finished.
 	 */
-	public Line getLine() {
+	public Line getLine() throws IOException {
 		if (isFinished()) {
 			return null;
 		} else {
@@ -47,7 +48,7 @@ public final class FileReader {
 	 * Reads the file until End-Of-File (EOF) is encountered.
 	 * @return List of the lines from the file.
 	 */
-	public Line[] getLines() {
+	public Line[] getLines() throws IOException {
 		ArrayList<Line> list = new ArrayList<Line>();
 
 		while (!isFinished()) {

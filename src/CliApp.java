@@ -1,3 +1,4 @@
+import java.awt.HeadlessException;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
@@ -13,6 +14,19 @@ public final class CliApp {
     }
 
     public static void main(String[] args) throws Throwable {
+        if (dialog("Do you want to use the GUI (Graphical User Interface) instead?")) {
+            // Start the GUI app
+            try {
+                new GuiApp();
+            } catch (HeadlessException exception) {
+                System.err.println("Cannot operate in graphical mode when there is no graphics environment available!");
+            }
+
+            return;
+        }
+
+        // Fallback to CLI app
+
         while (true) {
             System.out.print("Please enter path to a plain text (e.g.: *.txt) file: ");
 
@@ -41,7 +55,7 @@ public final class CliApp {
                     }
                 } while (loop);
             } catch (FileNotFoundException exception) {
-                if (!continueUsing("Cannot open specified file.\nWould you like to try with another file?")) {
+                if (!continueUsing("Cannot open specified file.")) {
                     break;
                 }
             } catch (SecurityException exception) {
@@ -97,9 +111,29 @@ public final class CliApp {
     }
 
     private static boolean continueUsing(String message) {
-        System.out.print(message);
-        // Not needed anymore.
-        message = null;
+        if (message != null) {
+            if (!message.isEmpty()) {
+                System.out.println(message);
+
+                // Not needed anymore.
+                message = null;
+            }
+        }
+        
+        return dialog("Would you like to try with another file?");
+    }
+
+    /**
+     * @param message
+     * @return Returns true when "Yes" is selected and false when "No" is selected.
+     */
+    private static boolean dialog(String message) {
+        if (message != null) {
+            System.out.print(message);
+
+            // Not needed anymore.
+            message = null;
+        }
 
         System.out.println(" (Y)es / (N)o");
 

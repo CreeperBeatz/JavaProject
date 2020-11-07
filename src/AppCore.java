@@ -19,7 +19,7 @@ public final class AppCore implements AutoCloseable {
 	 * @throws SecurityException
 	 * @throws InvalidContentException
 	 */
-	public AppCore(String filename) throws FileNotFoundException, SecurityException {
+	public AppCore(String filename) throws FileNotFoundException, SecurityException, IOException {
 		super();
 
 		this.filename = filename;
@@ -52,14 +52,30 @@ public final class AppCore implements AutoCloseable {
 		}
 	}
 
+	public String getContentString() throws IllegalStateException {
+		if (lines == null) {
+			throw new IllegalStateException();
+		}
+
+		StringBuilder content = new StringBuilder();
+
+		for (Line line : lines) {
+			content.append(line.getLine());
+			content.append('\n');
+		}
+
+		if (!content.isEmpty()) {
+			content.deleteCharAt(content.length() - 1);
+		}
+
+		return content.toString();
+	}
+
 	@Override
 	public void close() throws FileNotFoundException, SecurityException, IOException {
 		if (lines == null) {
 			return;
 		}
-
-		Line[] lines = this.lines;
-		this.lines = null;
 
 		OutputStream file = new FileOutputStream(filename);
 
@@ -69,5 +85,7 @@ public final class AppCore implements AutoCloseable {
 		}
 
 		file.close();
+
+		this.lines = null;
 	}
 }
