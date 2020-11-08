@@ -238,20 +238,27 @@ public final class GuiApp extends JFrame {
 
 	private MouseListener addEmptyLineHandler() {
 		return new MouseListener() {
+			private boolean withinControl = false;
+
 			@Override
 			public void mouseClicked(MouseEvent e) {}
 
 			@Override
-			public void mouseEntered(MouseEvent e) {}
+			public void mouseEntered(MouseEvent e) {
+				withinControl = true;
+			}
 
 			@Override
-			public void mouseExited(MouseEvent e) {}
+			public void mouseExited(MouseEvent e) {
+				withinControl = false;
+			}
 
 			@Override
-			public void mouseReleased(MouseEvent e) {}
+			public void mouseReleased(MouseEvent e) {
+				if ((e.getButton() & MouseEvent.BUTTON1) != MouseEvent.BUTTON1 || !withinControl) {
+					return;
+				}
 
-			@Override
-			public void mousePressed(MouseEvent e) {
 				if (appCore == null) {
 					errorOpenFile();
 
@@ -262,25 +269,35 @@ public final class GuiApp extends JFrame {
 
 				refreshContent();
 			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {}
 		};
 	}
 
 	private MouseListener removeLastLineHandler() {
 		return new MouseListener() {
+			private boolean withinControl = false;
+
 			@Override
 			public void mouseClicked(MouseEvent e) {}
 
 			@Override
-			public void mouseEntered(MouseEvent e) {}
+			public void mouseEntered(MouseEvent e) {
+				withinControl = true;
+			}
 
 			@Override
-			public void mouseExited(MouseEvent e) {}
+			public void mouseExited(MouseEvent e) {
+				withinControl = false;
+			}
 
 			@Override
-			public void mouseReleased(MouseEvent e) {}
+			public void mouseReleased(MouseEvent e) {
+				if ((e.getButton() & MouseEvent.BUTTON1) != MouseEvent.BUTTON1 || !withinControl) {
+					return;
+				}
 
-			@Override
-			public void mousePressed(MouseEvent e) {
 				if (appCore == null) {
 					errorOpenFile();
 
@@ -303,6 +320,9 @@ public final class GuiApp extends JFrame {
 
 				refreshContent();
 			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {}
 		};
 	}
 	
@@ -310,20 +330,33 @@ public final class GuiApp extends JFrame {
 		GuiApp app = this;
 
 		return new MouseListener() {
+			private boolean withinControl = false;
+
 			@Override
 			public void mouseClicked(MouseEvent e) {}
 
 			@Override
-			public void mouseEntered(MouseEvent e) {}
+			public void mouseEntered(MouseEvent e) {
+				withinControl = true;
+			}
 
 			@Override
-			public void mouseExited(MouseEvent e) {}
+			public void mouseExited(MouseEvent e) {
+				withinControl = false;
+			}
 
 			@Override
-			public void mouseReleased(MouseEvent e) {}
+			public void mouseReleased(MouseEvent e) {
+				if ((e.getButton() & MouseEvent.BUTTON1) != MouseEvent.BUTTON1 || !withinControl) {
+					return;
+				}
 
-			@Override
-			public void mousePressed(MouseEvent e) {
+				if (appCore == null) {
+					errorOpenFile();
+
+					return;
+				}
+
 				if (appCore == null) {
 					errorOpenFile();
 
@@ -380,6 +413,9 @@ public final class GuiApp extends JFrame {
 					errorLineOutOfBounds();
 				}
 			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {}
 		};
 	}
 
@@ -387,20 +423,33 @@ public final class GuiApp extends JFrame {
 		GuiApp app = this;
 
 		return new MouseListener() {
+			private boolean withinControl = false;
+
 			@Override
 			public void mouseClicked(MouseEvent e) {}
 
 			@Override
-			public void mouseEntered(MouseEvent e) {}
+			public void mouseEntered(MouseEvent e) {
+				withinControl = true;
+			}
 
 			@Override
-			public void mouseExited(MouseEvent e) {}
+			public void mouseExited(MouseEvent e) {
+				withinControl = false;
+			}
 
 			@Override
-			public void mouseReleased(MouseEvent e) {}
+			public void mouseReleased(MouseEvent e) {
+				if ((e.getButton() & MouseEvent.BUTTON1) != MouseEvent.BUTTON1 || !withinControl) {
+					return;
+				}
 
-			@Override
-			public void mousePressed(MouseEvent e) {
+				if (appCore == null) {
+					errorOpenFile();
+
+					return;
+				}
+
 				if (appCore == null) {
 					errorOpenFile();
 
@@ -505,6 +554,9 @@ public final class GuiApp extends JFrame {
 					// All indexes are bound checked.
 				}
 			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {}
 		};
 	}
 
@@ -512,20 +564,27 @@ public final class GuiApp extends JFrame {
 		GuiApp app = this;
 
 		return new MouseListener() {
+			private boolean withinControl = false;
+
 			@Override
 			public void mouseClicked(MouseEvent e) {}
 
 			@Override
-			public void mouseEntered(MouseEvent e) {}
+			public void mouseEntered(MouseEvent e) {
+				withinControl = true;
+			}
 
 			@Override
-			public void mouseExited(MouseEvent e) {}
+			public void mouseExited(MouseEvent e) {
+				withinControl = false;
+			}
 
 			@Override
-			public void mouseReleased(MouseEvent e) {}
+			public void mouseReleased(MouseEvent e) {
+				if ((e.getButton() & MouseEvent.BUTTON1) != MouseEvent.BUTTON1 || !withinControl) {
+					return;
+				}
 
-			@Override
-			public void mousePressed(MouseEvent e) {
 				if ((e.getButton() & MouseEvent.BUTTON1) != 0) {
 					JFileChooser fileChooser = new JFileChooser();
 
@@ -536,6 +595,9 @@ public final class GuiApp extends JFrame {
 					}
 				}
 			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {}
 		};
 	}
 
