@@ -31,10 +31,15 @@ public final class CliApp {
             System.out.print("Please enter path to a plain text (e.g.: *.txt) file: ");
 
             try (AppCore appCore = new AppCore(input.nextLine())) {
+                System.out.println();
+
                 boolean loop = true;
 
                 do {
-                    System.out.println("Please select an option from below:\n(1) Swap two lines\n(2) Swap two words\n(3) Select another file\n(4) Exit\n");
+                    System.out.println("Content:");
+                    System.out.println(appCore.getContentString());
+                    System.out.println();
+                    System.out.println("Please select an option from below:\n(1) Swap two lines\n(2) Swap two words\n(3) Add new line\n(4) Remove last line [has to be empty]\n(5) Select another file\n(6) Exit\n");
 
                     switch (inputNumber()) {
                     case 1:
@@ -44,9 +49,20 @@ public final class CliApp {
                         swapWords(appCore);
                         break;
                     case 3:
-                        loop = false;
+                        appCore.addEmptyLine();
                         break;
                     case 4:
+                        if (appCore.isEmpty()) {
+                            System.err.println("There are no lines!");
+                        } else if (!appCore.isLastLineEmpty()) {
+                            System.err.println("Last line is not empty!");
+                        } else {
+                            appCore.removeLastLine();
+                        }
+                    case 5:
+                        loop = false;
+                        break;
+                    case 6:
                         // Writes down the new content and closes the file.
                         appCore.close();
                         return;
