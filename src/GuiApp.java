@@ -239,17 +239,7 @@ public final class GuiApp extends JFrame {
 	private MouseListener addEmptyLineHandler() {
 		return new MouseListener() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (appCore == null) {
-					errorOpenFile();
-
-					return;
-				}
-
-				appCore.addEmptyLine();
-
-				refreshContent();
-			}
+			public void mouseClicked(MouseEvent e) {}
 
 			@Override
 			public void mouseEntered(MouseEvent e) {}
@@ -261,14 +251,36 @@ public final class GuiApp extends JFrame {
 			public void mouseReleased(MouseEvent e) {}
 
 			@Override
-			public void mousePressed(MouseEvent e) {}
+			public void mousePressed(MouseEvent e) {
+				if (appCore == null) {
+					errorOpenFile();
+
+					return;
+				}
+
+				appCore.addEmptyLine();
+
+				refreshContent();
+			}
 		};
 	}
 
 	private MouseListener removeLastLineHandler() {
 		return new MouseListener() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mouseClicked(MouseEvent e) {}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {}
+
+			@Override
+			public void mouseExited(MouseEvent e) {}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
 				if (appCore == null) {
 					errorOpenFile();
 
@@ -291,6 +303,15 @@ public final class GuiApp extends JFrame {
 
 				refreshContent();
 			}
+		};
+	}
+	
+	private MouseListener swapLinesHandler() {
+		GuiApp app = this;
+
+		return new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {}
 
 			@Override
 			public void mouseEntered(MouseEvent e) {}
@@ -302,16 +323,7 @@ public final class GuiApp extends JFrame {
 			public void mouseReleased(MouseEvent e) {}
 
 			@Override
-			public void mousePressed(MouseEvent e) {}
-		};
-	}
-	
-	private MouseListener swapLinesHandler() {
-		GuiApp app = this;
-
-		return new MouseListener() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mousePressed(MouseEvent e) {
 				if (appCore == null) {
 					errorOpenFile();
 
@@ -368,6 +380,15 @@ public final class GuiApp extends JFrame {
 					errorLineOutOfBounds();
 				}
 			}
+		};
+	}
+
+	private MouseListener swapWordsHandler() {
+		GuiApp app = this;
+
+		return new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {}
 
 			@Override
 			public void mouseEntered(MouseEvent e) {}
@@ -379,16 +400,7 @@ public final class GuiApp extends JFrame {
 			public void mouseReleased(MouseEvent e) {}
 
 			@Override
-			public void mousePressed(MouseEvent e) {}
-		};
-	}
-
-	private MouseListener swapWordsHandler() {
-		GuiApp app = this;
-
-		return new MouseListener() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mousePressed(MouseEvent e) {
 				if (appCore == null) {
 					errorOpenFile();
 
@@ -493,6 +505,15 @@ public final class GuiApp extends JFrame {
 					// All indexes are bound checked.
 				}
 			}
+		};
+	}
+
+	private MouseListener chooseFileHandler() {
+		GuiApp app = this;
+
+		return new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {}
 
 			@Override
 			public void mouseEntered(MouseEvent e) {}
@@ -504,16 +525,7 @@ public final class GuiApp extends JFrame {
 			public void mouseReleased(MouseEvent e) {}
 
 			@Override
-			public void mousePressed(MouseEvent e) {}
-		};
-	}
-
-	private MouseListener chooseFileHandler() {
-		GuiApp app = this;
-
-		return new MouseListener() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mousePressed(MouseEvent e) {
 				if ((e.getButton() & MouseEvent.BUTTON1) != 0) {
 					JFileChooser fileChooser = new JFileChooser();
 
@@ -524,18 +536,6 @@ public final class GuiApp extends JFrame {
 					}
 				}
 			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {}
-
-			@Override
-			public void mouseExited(MouseEvent e) {}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {}
-
-			@Override
-			public void mousePressed(MouseEvent e) {}
 		};
 	}
 
