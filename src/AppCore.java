@@ -80,6 +80,10 @@ public final class AppCore implements AutoCloseable {
 		return lines.get(line).isWordInBounds(word);
 	}
 
+	public boolean lineHasWords(int line) throws IllegalStateException, IndexOutOfBoundsException {
+		return isWordInBounds(line, 0);
+	}
+
 	public String getContentString() throws IllegalStateException {
 		if (lines == null) {
 			throw new IllegalStateException();
