@@ -16,6 +16,20 @@ public final class Line {
 		return line;
 	}
 
+	public boolean isWordInBounds(int word) {
+		if (0 <= word) {
+			if (words.length <= word) {
+				words = LineParser.getWords(this, word);
+			}
+
+			if (word < words.length) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public void swapWords(Line other, int ownWordIndex, int otherWordIndex) throws IndexOutOfBoundsException {
 		// Compare addresses to check whether it's the same object.
 		if (this == other) {

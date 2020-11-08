@@ -52,6 +52,17 @@ public final class AppCore implements AutoCloseable {
 		}
 	}
 
+	public boolean isLineInBounds(int line) {
+		if (0 <= line && line < lines.length) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isWordInBounds(int line, int word) throws IndexOutOfBoundsException {
+		return lines[line].isWordInBounds(word);
+	}
+
 	public String getContentString() throws IllegalStateException {
 		if (lines == null) {
 			throw new IllegalStateException();
@@ -76,16 +87,22 @@ public final class AppCore implements AutoCloseable {
 		if (lines == null) {
 			return;
 		}
+		
+		OutputStream file = null;
+		
+		try {
+			file = new FileOutputStream(filename);
 
-		OutputStream file = new FileOutputStream(filename);
+			for (Line line : lines) {
+				file.write(line.getLine().getBytes());
+				file.write('\n');
+			}
+		} finally {
+			this.lines = null;
 
-		for (Line line : lines) {
-			file.write(line.getLine().getBytes());
-			file.write('\n');
+			if (file != null) {
+				file.close();
+			}
 		}
-
-		file.close();
-
-		this.lines = null;
 	}
 }
