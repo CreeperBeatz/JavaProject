@@ -59,7 +59,7 @@ public final class CliApp {
                     break;
                 }
             } catch (SecurityException exception) {
-                System.out.println("Cannot operate on file die to security exception!");
+                System.err.println("Cannot operate on file die to security exception!");
 
                 return;
             }
@@ -106,7 +106,7 @@ public final class CliApp {
         try {
             appCore.swapWords(firstLine - 1, firstWord - 1, secondLine - 1, secondWord - 1);
         } catch (IndexOutOfBoundsException exception) {
-            System.out.println("No such line(s) and/or word(s)!");
+            System.err.println("No such line(s) and/or word(s)!");
         }
     }
 
