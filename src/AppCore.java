@@ -32,6 +32,10 @@ public final class AppCore implements AutoCloseable {
 	}
 
 	public void swapWords(int firstLine, int firstWord, int secondLine, int secondWord) throws IndexOutOfBoundsException, IllegalStateException {
+		if (lines == null) {
+			throw new IllegalStateException();
+		}
+
 		try {
 			lines.get(firstLine).swapWords(lines.get(secondLine), firstWord, secondWord);
 		} catch (NullPointerException exception) {
@@ -40,6 +44,10 @@ public final class AppCore implements AutoCloseable {
 	}
 
 	public void swapLines(int firstLine, int secondLine) throws IndexOutOfBoundsException, IllegalStateException {
+		if (lines == null) {
+			throw new IllegalStateException();
+		}
+
 		if (firstLine == secondLine) {
 			return;
 		}
@@ -52,14 +60,23 @@ public final class AppCore implements AutoCloseable {
 		}
 	}
 
-	public boolean isLineInBounds(int line) {
+	public boolean isLineInBounds(int line) throws IllegalStateException {
+		if (lines == null) {
+			throw new IllegalStateException();
+		}
+
 		if (0 <= line && line < lines.size()) {
 			return true;
 		}
+
 		return false;
 	}
 
-	public boolean isWordInBounds(int line, int word) throws IndexOutOfBoundsException {
+	public boolean isWordInBounds(int line, int word) throws IllegalStateException, IndexOutOfBoundsException {
+		if (lines == null) {
+			throw new IllegalStateException();
+		}
+
 		return lines.get(line).isWordInBounds(word);
 	}
 
