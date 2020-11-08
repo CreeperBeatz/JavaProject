@@ -1,11 +1,10 @@
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public final class LineReader {
-	private final Scanner input;
+	private final FileReader input;
 	private boolean finished;
 	
 	/**
@@ -18,11 +17,8 @@ public final class LineReader {
 	public LineReader(String filename) throws FileNotFoundException, SecurityException {
 		super();
 
-		input = new Scanner(new FileInputStream(filename));
-
-		if (!input.hasNextLine()) {
-			setFinished();
-		}
+		input = new FileReader(filename);
+		finished = false;
 	}
 
 	/**
@@ -34,13 +30,40 @@ public final class LineReader {
 		if (isFinished()) {
 			return null;
 		} else {
-			String line = input.nextLine();
+			StringBuilder line = new StringBuilder();
 
-			if (!input.hasNextLine()) {
-				setFinished();
-			}
+			int c;
+			
+			while (true) {
+				c = input.read();
 
-			return new Line(line);
+				if (c == -1) {
+					setFinished();
+					
+					break;
+				} else if ((char) c == '\n') {
+					break;
+				} else {
+					if ((char) c == '\r') {
+						c = input.read();
+
+						if (c == -1) {
+							setFinished();
+							
+							break;
+						} else if ((char) c == '\n') {
+							break;
+						}
+
+						// '\r' (CR) is a special character so it shouldn't be added to the string.
+						continue;
+					}
+
+					line.append((char) c);
+				}
+			};
+
+			return new Line(line.toString());
 		}
 	}
 
@@ -55,9 +78,6 @@ public final class LineReader {
 			list.add(getLine());
 		}
 
-		// Add one empty line in case the "Scanner" skipped it.
-		list.add(new Line(""));
-
 		return list.toArray(Line[]::new);
 	}
 
@@ -66,7 +86,7 @@ public final class LineReader {
 	}
 
 	// No fields are required because once set as finished, this flag shouldn't be changed.
-	private void setFinished() {
+	private void setFinished() throws IOException {
 		finished = true;
 
 		input.close();
