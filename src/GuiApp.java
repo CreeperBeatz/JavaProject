@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.Container;
 import java.awt.Panel;
 import java.awt.event.MouseEvent;
@@ -65,7 +66,23 @@ public final class GuiApp extends JFrame {
 
 		// Bottom panel
 		{
-			JPanel bottomPanel = new JPanel(new BorderLayout());
+			JPanel bottomPanel = new JPanel(new GridLayout());
+
+			{
+				JButton button = new JButton("Add Empty Line");
+
+				button.addMouseListener(addEmptyLineHandler());
+
+				bottomPanel.add(button);
+			}
+
+			{
+				JButton button = new JButton("Remove Last Line");
+
+				button.addMouseListener(removeLastLineHandler());
+
+				bottomPanel.add(button);
+			}
 
 			{
 				JButton button = new JButton("Swap Lines");
@@ -87,22 +104,22 @@ public final class GuiApp extends JFrame {
 		}
 
 		{
-			GuiApp app = this;
-
 			addWindowListener(new WindowListener() {
 				@Override
 				public void windowOpened(WindowEvent e) {}
 
 				@Override
 				public void windowClosing(WindowEvent e) {
-					try {
-						appCore.close();
-					} catch (IOException exception) {
-						JOptionPane.showMessageDialog(app, new JLabel("Cannot write down the new content because the file cannot be opened!"), "Error", JOptionPane.ERROR_MESSAGE);
-					} catch (SecurityException exception) {
-						JOptionPane.showMessageDialog(app, new JLabel("Cannot operate due to security violation!"), "Error", JOptionPane.ERROR_MESSAGE);
+					if (appCore != null) {
+						try {
+							appCore.close();
+						} catch (IOException exception) {
+							errorCannotWriteDown();
+						} catch (SecurityException exception) {
+							errorSecurityViolation();
 
-						System.exit(101);
+							System.exit(101);
+						}
 					}
 				}
 
@@ -125,6 +142,14 @@ public final class GuiApp extends JFrame {
 		setVisible(true);
 	}
 
+	private void refreshContent() {
+		if (appCore == null) {
+			content.setText(null);
+		} else {
+			content.setText(appCore.getContentString());
+		}
+	}
+
 	private void newSession(String path) {
 		try {
 			if (appCore != null) {
@@ -134,25 +159,67 @@ public final class GuiApp extends JFrame {
 			}
 
 			filePath.setText(null);
-			content.setText(null);
+
+			refreshContent();
 
 			try {
 				appCore = new AppCore(path);
 
 				filePath.setText(path);
-				content.setText(appCore.getContentString());
+
+				refreshContent();
 			} catch (FileNotFoundException exception) {
-				JOptionPane.showMessageDialog(this, new JLabel("File cannot be found!"), "Error", JOptionPane.ERROR_MESSAGE);
+				showErrorMessage("File cannot be found!");
 			} catch (IOException exception) {
-				JOptionPane.showMessageDialog(this, new JLabel("Cannot read content of the file!"), "Error", JOptionPane.ERROR_MESSAGE);
+				showErrorMessage("Cannot read content of the file!");
 			}
 		} catch (IOException exception) {
-			JOptionPane.showMessageDialog(this, new JLabel("Cannot write down the new content because the file cannot be opened!"), "Error", JOptionPane.ERROR_MESSAGE);
+			showErrorMessage("Cannot write down the new content because the file cannot be opened!");
 		} catch (SecurityException exception) {
-			JOptionPane.showMessageDialog(this, new JLabel("Cannot operate due to security violation!"), "Error", JOptionPane.ERROR_MESSAGE);
+			showErrorMessage("Cannot operate due to security violation!");
 
 			System.exit(101);
 		}
+	}
+
+	private void showErrorMessage(String message) {
+		JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
+	}
+
+	private void errorOpenFile() {
+		showErrorMessage("Please open a file first!");
+	}
+
+	private void errorCannotWriteDown() {
+		showErrorMessage("Cannot write down the new content because the file cannot be opened!");
+	}
+
+	private void errorSecurityViolation() {
+		showErrorMessage("Cannot operate due to security violation!");
+	}
+
+	private void errorNoLines() {
+		JOptionPane.showMessageDialog(this, "There are no lines!", "Error", JOptionPane.ERROR_MESSAGE);
+	}
+
+	private void errorLastLineNotEmpty() {
+		JOptionPane.showMessageDialog(this, "Last line must be empty to be removed!", "Error", JOptionPane.ERROR_MESSAGE);
+	}
+
+	private void errorEnterValidNumber() {
+		JOptionPane.showMessageDialog(this, "Please enter valid whole number!", "Error", JOptionPane.ERROR_MESSAGE);
+	}
+
+	private void errorLineOutOfBounds() {
+		JOptionPane.showMessageDialog(this, "Please enter a line number between 1 and the number of lines!", "Error", JOptionPane.ERROR_MESSAGE);
+	}
+
+	private void errorWordOutOfBounds() {
+		JOptionPane.showMessageDialog(this, "Please enter a word number between 1 and the number of words on the specified lines!", "Error", JOptionPane.ERROR_MESSAGE);
+	}
+
+	private void errorNoWordOnTheLine() {
+		JOptionPane.showMessageDialog(this, "Please select a line with words!", "Error", JOptionPane.ERROR_MESSAGE);
 	}
 
 	private static void addFilePathLabel(Container container) {
@@ -169,6 +236,76 @@ public final class GuiApp extends JFrame {
 		return textField;
 	}
 
+	private MouseListener addEmptyLineHandler() {
+		return new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (appCore == null) {
+					errorOpenFile();
+
+					return;
+				}
+
+				appCore.addEmptyLine();
+
+				refreshContent();
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {}
+
+			@Override
+			public void mouseExited(MouseEvent e) {}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {}
+
+			@Override
+			public void mousePressed(MouseEvent e) {}
+		};
+	}
+
+	private MouseListener removeLastLineHandler() {
+		return new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (appCore == null) {
+					errorOpenFile();
+
+					return;
+				}
+
+				if (appCore.isEmpty()) {
+					errorNoLines();
+
+					return;
+				}
+
+				if (!appCore.isLastLineEmpty()) {
+					errorLastLineNotEmpty();
+
+					return;
+				}
+
+				appCore.removeLastLine();
+
+				refreshContent();
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {}
+
+			@Override
+			public void mouseExited(MouseEvent e) {}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {}
+
+			@Override
+			public void mousePressed(MouseEvent e) {}
+		};
+	}
+	
 	private MouseListener swapLinesHandler() {
 		GuiApp app = this;
 
@@ -176,7 +313,7 @@ public final class GuiApp extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (appCore == null) {
-					JOptionPane.showMessageDialog(app, "Please open a file first!", "Error", JOptionPane.ERROR_MESSAGE);
+					errorOpenFile();
 
 					return;
 				}
@@ -185,42 +322,50 @@ public final class GuiApp extends JFrame {
 					int firstLine, secondLine;
 
 					do {
-						String input = JOptionPane.showInputDialog(app, new JLabel("Please enter first line's number:"));
+						String input = JOptionPane.showInputDialog(app, "Please enter first line's number:");
 
 						try {
-							firstLine = Integer.parseUnsignedInt(input);
+							firstLine = Integer.parseUnsignedInt(input) - 1;
 
-							break;
+							if (appCore.isLineInBounds(firstLine)) {
+								break;
+							} else {
+								errorLineOutOfBounds();
+							}
 						} catch (NumberFormatException exception) {
 							if (input == null) {
 								return;
 							}
 
-							JOptionPane.showMessageDialog(app, "Please enter valid whole number!", "Error", JOptionPane.ERROR_MESSAGE);
+							errorEnterValidNumber();
 						}
 					} while (true);
 
 					do {
-						String input = JOptionPane.showInputDialog(app, new JLabel("Please enter second line's number:"));
+						String input = JOptionPane.showInputDialog(app, "Please enter second line's number:");
 
 						try {
-							secondLine = Integer.parseUnsignedInt(input);
+							secondLine = Integer.parseUnsignedInt(input) - 1;
 
-							break;
+							if (appCore.isLineInBounds(secondLine)) {
+								break;
+							} else {
+								errorLineOutOfBounds();
+							}
 						} catch (NumberFormatException exception) {
 							if (input == null) {
 								return;
 							}
 
-							JOptionPane.showMessageDialog(app, "Please enter valid whole number!", "Error", JOptionPane.ERROR_MESSAGE);
+							errorEnterValidNumber();
 						}
 					} while (true);
 
-					appCore.swapLines(firstLine - 1, secondLine - 1);
+					appCore.swapLines(firstLine, secondLine);
 
-					content.setText(appCore.getContentString());
+					refreshContent();
 				} catch (IndexOutOfBoundsException exception) {
-					JOptionPane.showMessageDialog(app, "Please enter line numbers that are between 1 and the number of lines!", "Error", JOptionPane.ERROR_MESSAGE);
+					errorLineOutOfBounds();
 				}
 			}
 
@@ -245,7 +390,7 @@ public final class GuiApp extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (appCore == null) {
-					JOptionPane.showMessageDialog(app, "Please open a file first!", "Error", JOptionPane.ERROR_MESSAGE);
+					errorOpenFile();
 
 					return;
 				}
@@ -254,18 +399,26 @@ public final class GuiApp extends JFrame {
 					int firstLine, firstWord, secondLine, secondWord;
 
 					do {
-						String input = JOptionPane.showInputDialog(app, new JLabel("Please enter first line's number:"));
+						String input = JOptionPane.showInputDialog(app, "Please enter first line's number:");
 
 						try {
-							firstLine = Integer.parseUnsignedInt(input);
+							firstLine = Integer.parseUnsignedInt(input) - 1;
 
-							break;
+							if (appCore.isLineInBounds(firstLine)) {
+								if (appCore.lineHasWords(firstLine)) {
+									break;
+								} else {
+									errorNoWordOnTheLine();
+								}
+							} else {
+								errorLineOutOfBounds();
+							}
 						} catch (NumberFormatException exception) {
 							if (input == null) {
 								return;
 							}
 
-							JOptionPane.showMessageDialog(app, "Please enter valid whole number!", "Error", JOptionPane.ERROR_MESSAGE);
+							errorEnterValidNumber();
 						}
 					} while (true);
 
@@ -273,31 +426,43 @@ public final class GuiApp extends JFrame {
 						String input = JOptionPane.showInputDialog(app, new JLabel("Please enter first word's number:"));
 
 						try {
-							firstWord = Integer.parseUnsignedInt(input);
+							firstWord = Integer.parseUnsignedInt(input) - 1;
 
-							break;
+							if (appCore.isWordInBounds(firstLine, firstWord)) {
+								break;
+							} else {
+								errorWordOutOfBounds();
+							}
 						} catch (NumberFormatException exception) {
 							if (input == null) {
 								return;
 							}
 
-							JOptionPane.showMessageDialog(app, "Please enter valid whole number!", "Error", JOptionPane.ERROR_MESSAGE);
+							errorEnterValidNumber();
 						}
 					} while (true);
 
 					do {
-						String input = JOptionPane.showInputDialog(app, new JLabel("Please enter second line's number:"));
+						String input = JOptionPane.showInputDialog(app, "Please enter second line's number:");
 
 						try {
-							secondLine = Integer.parseUnsignedInt(input);
+							secondLine = Integer.parseUnsignedInt(input) - 1;
 
-							break;
+							if (appCore.isLineInBounds(secondLine)) {
+								if (appCore.lineHasWords(secondLine)) {
+									break;
+								} else {
+									errorNoWordOnTheLine();
+								}
+							} else {
+								errorLineOutOfBounds();
+							}
 						} catch (NumberFormatException exception) {
 							if (input == null) {
 								return;
 							}
 
-							JOptionPane.showMessageDialog(app, "Please enter valid whole number!", "Error", JOptionPane.ERROR_MESSAGE);
+							errorEnterValidNumber();
 						}
 					} while (true);
 
@@ -305,23 +470,27 @@ public final class GuiApp extends JFrame {
 						String input = JOptionPane.showInputDialog(app, new JLabel("Please enter second word's number:"));
 
 						try {
-							secondWord = Integer.parseUnsignedInt(input);
+							secondWord = Integer.parseUnsignedInt(input) - 1;
 
-							break;
+							if (appCore.isWordInBounds(secondLine, secondWord)) {
+								break;
+							} else {
+								errorWordOutOfBounds();
+							}
 						} catch (NumberFormatException exception) {
 							if (input == null) {
 								return;
 							}
 
-							JOptionPane.showMessageDialog(app, "Please enter valid whole number!", "Error", JOptionPane.ERROR_MESSAGE);
+							errorEnterValidNumber();
 						}
 					} while (true);
 
-					appCore.swapWords(firstLine - 1, firstWord - 1, secondLine - 1, secondWord - 1);
+					appCore.swapWords(firstLine, firstWord, secondLine, secondWord);
 
-					content.setText(appCore.getContentString());
+					refreshContent();
 				} catch (IndexOutOfBoundsException exception) {
-					JOptionPane.showMessageDialog(app, "Please enter line numbers that are between 1 and the number of lines and word numbers between 1 and the number of words in the line!", "Error", JOptionPane.ERROR_MESSAGE);
+					// All indexes are bound checked.
 				}
 			}
 
