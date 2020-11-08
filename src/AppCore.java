@@ -23,7 +23,7 @@ public final class AppCore implements AutoCloseable {
 		super();
 
 		this.filename = filename;
-		lines = new FileReader(filename).getLines();
+		lines = new LineReader(filename).getLines();
 	}
 
 	public String getFilename() {

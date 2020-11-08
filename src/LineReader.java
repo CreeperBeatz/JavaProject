@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public final class FileReader {
+public final class LineReader {
 	private final Scanner input;
 	private boolean finished;
 	
@@ -15,7 +15,7 @@ public final class FileReader {
 	 * @throws FileNotFoundException
 	 * @throws SecurityException
 	 */
-	public FileReader(String filename) throws FileNotFoundException, SecurityException {
+	public LineReader(String filename) throws FileNotFoundException, SecurityException {
 		super();
 
 		input = new Scanner(new FileInputStream(filename));
