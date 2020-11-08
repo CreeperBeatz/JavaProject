@@ -2,10 +2,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
 public final class AppCore implements AutoCloseable {
 	private final String filename;
-	private Line[] lines;
+	private List<Line> lines;
 	private static final String closedMessage;
 
 	static {
@@ -32,7 +33,7 @@ public final class AppCore implements AutoCloseable {
 
 	public void swapWords(int firstLine, int firstWord, int secondLine, int secondWord) throws IndexOutOfBoundsException, IllegalStateException {
 		try {
-			lines[firstLine].swapWords(lines[secondLine], firstWord, secondWord);
+			lines.get(firstLine).swapWords(lines.get(secondLine), firstWord, secondWord);
 		} catch (NullPointerException exception) {
 			throw new IllegalStateException(closedMessage);
 		}
@@ -44,23 +45,22 @@ public final class AppCore implements AutoCloseable {
 		}
 
 		try {
-			Line temp = lines[firstLine];
-			lines[firstLine] = lines[secondLine];
-			lines[secondLine] = temp;
+			Line temp = lines.set(firstLine, lines.get(secondLine));
+			lines.set(secondLine, temp);
 		} catch (NullPointerException exception) {
 			throw new IllegalStateException(closedMessage);
 		}
 	}
 
 	public boolean isLineInBounds(int line) {
-		if (0 <= line && line < lines.length) {
+		if (0 <= line && line < lines.size()) {
 			return true;
 		}
 		return false;
 	}
 
 	public boolean isWordInBounds(int line, int word) throws IndexOutOfBoundsException {
-		return lines[line].isWordInBounds(word);
+		return lines.get(line).isWordInBounds(word);
 	}
 
 	public String getContentString() throws IllegalStateException {
@@ -70,16 +70,63 @@ public final class AppCore implements AutoCloseable {
 
 		StringBuilder content = new StringBuilder();
 
-		for (Line line : lines) {
-			content.append(line.getLine());
-			content.append('\n');
+		if (lines.size() != 0) {
+			content.append("1 || ");
+			content.append(lines.get(0).getLine());
 		}
 
-		if (!content.isEmpty()) {
-			content.deleteCharAt(content.length() - 1);
+		for (int z = 1; z < lines.size(); ++z) {
+			content.append('\n');
+			content.append(z + 1);
+			content.append(" || ");
+			content.append(lines.get(z).getLine());
 		}
 
 		return content.toString();
+	}
+
+	public boolean isEmpty() throws IllegalStateException {
+		if (lines == null) {
+			throw new IllegalStateException();
+		}
+
+		return lines.isEmpty();
+	}
+
+	public int lineCount() throws IllegalStateException {
+		if (lines == null) {
+			throw new IllegalStateException();
+		}
+
+		return lines.size();
+	}
+
+	public void addEmptyLine() throws UnsupportedOperationException, ClassCastException, IllegalStateException, NullPointerException, IllegalArgumentException {
+		if (lines == null) {
+			throw new IllegalStateException();
+		}
+
+		lines.add(new Line());
+	}
+
+	public boolean isLastLineEmpty() throws IllegalStateException {
+		if (lines == null) {
+			throw new IllegalStateException();
+		}
+
+		if (lines.size() == 0) {
+			return false;
+		}
+
+		return lines.get(lines.size() - 1).isEmpty();
+	}
+
+	public void removeLastLine() throws IllegalStateException {
+		if (lines == null) {
+			throw new IllegalStateException();
+		}
+
+		lines.remove(lines.size() - 1);
 	}
 
 	@Override
@@ -93,13 +140,13 @@ public final class AppCore implements AutoCloseable {
 		try {
 			file = new FileOutputStream(filename);
 
-			if (lines.length != 0) {
-				file.write(lines[0].getLine().getBytes());
+			if (lines.size() != 0) {
+				file.write(lines.get(0).getLine().getBytes());
 			}
 
-			for (int z = 1; z < lines.length; ++z) {
+			for (int z = 1; z < lines.size(); ++z) {
 				file.write('\n');
-				file.write(lines[z].getLine().getBytes());
+				file.write(lines.get(z).getLine().getBytes());
 			}
 		} finally {
 			this.lines = null;

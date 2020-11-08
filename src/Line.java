@@ -3,13 +3,22 @@
  */
 public final class Line {
 	private String line;
-	private Word[] words;
+	private Word[] words = {};
+
+	public Line() {
+		super();
+
+		line = "";
+	}
 	
 	public Line(String line) {
 		super();
 
 		this.line = line;
-		words = new Word[0];
+	}
+
+	public boolean isEmpty() {
+		return line.isEmpty();
 	}
 
 	public String getLine() {
