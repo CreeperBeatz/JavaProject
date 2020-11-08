@@ -28,7 +28,7 @@ public final class Line {
 	public boolean isWordInBounds(int word) {
 		if (0 <= word) {
 			if (words.length <= word) {
-				words = LineParser.getWords(this, word);
+				words = LineParser.getWords(this, word + 1);
 			}
 
 			if (word < words.length) {
