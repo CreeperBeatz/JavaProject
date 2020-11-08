@@ -198,7 +198,11 @@ public final class CliApp {
             index = inputNumber() - 1;
 
             if (appCore.isLineInBounds(index)) {
-                break;
+                if (appCore.lineHasWords(index)) {
+                    break;
+                } else {
+                    System.err.println("Please select a line that has words!");
+                }
             } else {
                 System.err.println("Please enter a line number between 1 and the number of lines!");
             }
