@@ -1,5 +1,6 @@
 import java.awt.HeadlessException;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 
 public final class CliApp {
@@ -13,7 +14,7 @@ public final class CliApp {
         super();
     }
 
-    public static void main(String[] args) throws Throwable {
+    public static void main(String[] args) {
         if (dialog("Do you want to use the GUI (Graphical User Interface) instead?")) {
             // Start the GUI app
             try {
@@ -71,9 +72,13 @@ public final class CliApp {
                     }
                 } while (loop);
             } catch (FileNotFoundException exception) {
-                if (!continueUsing("Cannot open specified file.")) {
+                if (!continueUsing("Cannot open specified file!")) {
                     break;
                 }
+            } catch (IOException exception) {
+                System.err.println("Cannot write down the new content to the file!");
+
+                return;
             } catch (SecurityException exception) {
                 System.err.println("Cannot operate on file die to security exception!");
 
@@ -85,16 +90,32 @@ public final class CliApp {
     private static void swapLines(AppCore appCore) {
         int firstLine, secondLine;
 
-        System.out.print("Enter first line's number: (1, 2, ...) ");
+        do {
+            System.out.print("Enter first line's number: ");
 
-        firstLine = inputNumber();
+            firstLine = inputNumber() - 1;
 
-        System.out.print("Enter second line's number: (1, 2, ...) ");
+            if (appCore.isLineInBounds(firstLine)) {
+                break;
+            } else {
+                System.err.println("Please enter a line number between 1 and the number of lines!");
+            }
+        } while (true);
 
-        secondLine = inputNumber();
+        do {
+            System.out.print("Enter second line's number: ");
+
+            secondLine = inputNumber() - 1;
+
+            if (appCore.isLineInBounds(secondLine)) {
+                break;
+            } else {
+                System.err.println("Please enter a line number between 1 and the number of lines!");
+            }
+        } while (true);
 
         try {
-            appCore.swapLines(firstLine - 1, secondLine - 1);
+            appCore.swapLines(firstLine, secondLine);
         } catch (IndexOutOfBoundsException exception) {
             System.out.println("No such line(s)!");
         }
@@ -103,26 +124,18 @@ public final class CliApp {
     private static void swapWords(AppCore appCore) {
         int firstLine, firstWord, secondLine, secondWord;
 
-        System.out.print("Enter first line's number: (1, 2, ...) ");
+        firstLine = inputLineNumber(appCore, "first");
 
-        firstLine = inputNumber();
+        firstWord = inputWordNumber(appCore, firstLine, "first");
 
-        System.out.print("Enter first word's number: (1, 2, ...) ");
+        secondLine = inputLineNumber(appCore, "second");
 
-        firstWord = inputNumber();
-
-        System.out.print("Enter second line's number: (1, 2, ...) ");
-
-        secondLine = inputNumber();
-
-        System.out.print("Enter second word's number: (1, 2, ...) ");
-
-        secondWord = inputNumber();
+        secondWord = inputWordNumber(appCore, secondLine, "second");
 
         try {
             appCore.swapWords(firstLine - 1, firstWord - 1, secondLine - 1, secondWord - 1);
         } catch (IndexOutOfBoundsException exception) {
-            System.err.println("No such line(s) and/or word(s)!");
+            // All indexes are bound checked.
         }
     }
 
@@ -168,7 +181,49 @@ public final class CliApp {
         do {
             try {
                 return Integer.parseUnsignedInt(input.nextLine());
-            } catch (NumberFormatException exception) {}
+            } catch (NumberFormatException exception) {
+                System.err.println("Please enter valid whole number!");
+            }
         } while (true);
+    }
+
+    private static int inputLineNumber(AppCore appCore, String line) {
+        int index;
+
+        do {
+            System.out.print("Enter ");
+            System.out.print(line);
+            System.out.print(" line's number: ");
+
+            index = inputNumber() - 1;
+
+            if (appCore.isLineInBounds(index)) {
+                break;
+            } else {
+                System.err.println("Please enter a line number between 1 and the number of lines!");
+            }
+        } while (true);
+
+        return index;
+    }
+
+    private static int inputWordNumber(AppCore appCore, int line, String word) {
+        int index;
+
+        do {
+            System.out.print("Enter ");
+            System.out.print(word);
+            System.out.print(" word's number: ");
+
+            index = inputNumber() - 1;
+
+            if (appCore.isWordInBounds(line, index)) {
+                break;
+            } else {
+                System.err.println("Please enter a word number between 1 and the number of words on that line!");
+            }
+        } while (true);
+
+        return index;
     }
 }
