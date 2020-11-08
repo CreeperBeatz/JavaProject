@@ -93,9 +93,13 @@ public final class AppCore implements AutoCloseable {
 		try {
 			file = new FileOutputStream(filename);
 
-			for (Line line : lines) {
-				file.write(line.getLine().getBytes());
+			if (lines.length != 0) {
+				file.write(lines[0].getLine().getBytes());
+			}
+
+			for (int z = 1; z < lines.length; ++z) {
 				file.write('\n');
+				file.write(lines[z].getLine().getBytes());
 			}
 		} finally {
 			this.lines = null;
