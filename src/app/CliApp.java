@@ -50,6 +50,7 @@ public final class CliApp {
                         } else {
                             appCore.removeLastLine();
                         }
+                        break;
                     case 5:
                         loop = false;
                         break;
