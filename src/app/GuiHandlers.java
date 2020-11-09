@@ -4,9 +4,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import app.core.AppCore;
@@ -294,10 +296,42 @@ final class GuiHandlers {
 				if ((e.getButton() & MouseEvent.BUTTON1) != 0) {
 					JFileChooser fileChooser = new JFileChooser();
 
-					fileChooser.setFileFilter(new FileNameExtensionFilter("Plain text", "txt"));
+					// Clear all allowed types list.
+					for (FileFilter filter : fileChooser.getChoosableFileFilters()) {
+						fileChooser.removeChoosableFileFilter(filter);
+					}
+
+					// Create new filter for plain text files.
+					FileFilter filter = new FileNameExtensionFilter("Plain text", "txt");
+
+					// Set as filter.
+					fileChooser.setFileFilter(filter);
 
 					if (fileChooser.showOpenDialog(app) == JFileChooser.APPROVE_OPTION) {
-						app.newSession(fileChooser.getSelectedFile().getAbsolutePath());
+						File file = fileChooser.getSelectedFile();
+
+						// Check whether the file is accepted by the filter.
+						if (!filter.accept(file)) {
+							GuiErrors.errorNotPlainTextFile(app);
+
+							return;
+						}
+
+						// Check for sufficient read permissions.
+						if (!file.canRead()) {
+							GuiErrors.errorCannotRead(app);
+
+							return;
+						}
+
+						// Check for sufficient write permissions.
+						if (!file.canWrite()) {
+							GuiErrors.errorCannotWrite(app);
+
+							return;
+						}
+
+						app.newSession(file.getAbsolutePath());
 					}
 				}
 			}

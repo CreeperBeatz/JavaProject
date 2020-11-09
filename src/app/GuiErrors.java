@@ -16,7 +16,11 @@ final class GuiErrors {
 	}
 
 	public static void errorCannotRead(GuiApp app) {
-		showErrorMessage(app, "Cannot read content of the file!");
+		showErrorMessage(app, "Cannot read the content of the file!");
+	}
+
+	public static void errorCannotWrite(GuiApp app) {
+		showErrorMessage(app, "Cannot write content to the file!");
 	}
 
 	public static void errorFileNotFound(GuiApp app) {
@@ -45,5 +49,9 @@ final class GuiErrors {
 
 	public static void errorNotEnoughWords(GuiApp app) {
 		showErrorMessage(app, "Not enough words available to perform a swap!");
+	}
+
+	public static void errorNotPlainTextFile(GuiApp app) {
+		showErrorMessage(app, "Selected file is not plain text file (*.txt)!");
 	}
 }
