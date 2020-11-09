@@ -4,6 +4,7 @@
 public final class Line {
 	private String line;
 	private Word[] words = {};
+	private boolean allWordsParsed;
 
 	public Line() {
 		super();
@@ -15,6 +16,7 @@ public final class Line {
 		super();
 
 		this.line = line;
+		allWordsParsed = false;
 	}
 
 	public boolean isEmpty() {
@@ -25,10 +27,28 @@ public final class Line {
 		return line;
 	}
 
+	public int wordCount() {
+		if (!allWordsParsed) {
+			words = LineParser.getWords(this);
+			
+			allWordsParsed = true;
+		}
+
+		return words.length;
+	}
+
 	public boolean isWordInBounds(int word) {
 		if (0 <= word) {
-			if (words.length <= word) {
-				words = LineParser.getWords(this, word + 1);
+			if (!allWordsParsed) {
+				if (words.length <= word) {
+					words = LineParser.getWords(this, word + 1);
+
+					if (words.length <= word) {
+						allWordsParsed = true;
+
+						return false;
+					}
+				}
 			}
 
 			if (word < words.length) {
@@ -59,8 +79,14 @@ public final class Line {
 			}
 
 			// Check whether the word map is already generated until the right word's index.
-			if (words.length < rightIndex + 1) {
-				this.words = LineParser.getWords(this, rightIndex + 1);
+			if (!allWordsParsed) {
+				if (words.length < rightIndex + 1) {
+					this.words = LineParser.getWords(this, rightIndex + 1);
+
+					if (words.length <= rightIndex) {
+						allWordsParsed = true;
+					}
+				}
 			}
 
 			// Will throw an "IndexOutOfBoundsException" in case the word count is smaller.
@@ -99,13 +125,25 @@ public final class Line {
 			}
 		} else {
 			// Check whether the word map is already generated until the word's index.
-			if (words.length < ownWordIndex + 1) {
-				this.words = LineParser.getWords(this, ownWordIndex + 1);
+			if (!allWordsParsed) {
+				if (words.length < ownWordIndex + 1) {
+					words = LineParser.getWords(this, ownWordIndex + 1);
+
+					if (words.length <= ownWordIndex) {
+						allWordsParsed = true;
+					}
+				}
 			}
 
 			// Check whether the word map is already generated until the word's index.
-			if (other.words.length < otherWordIndex + 1) {
-				other.words = LineParser.getWords(other, otherWordIndex + 1);
+			if (!other.allWordsParsed) {
+				if (other.words.length < otherWordIndex + 1) {
+					other.words = LineParser.getWords(other, otherWordIndex + 1);
+
+					if (other.words.length <= otherWordIndex) {
+						allWordsParsed = true;
+					}
+				}
 			}
 
 			// Will throw an "IndexOutOfBoundsException" in case the word count is smaller.

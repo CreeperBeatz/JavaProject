@@ -122,6 +122,14 @@ public final class AppCore implements AutoCloseable {
 		return lines.size();
 	}
 
+	public int wordCountOnLine(int line) throws IllegalStateException, IndexOutOfBoundsException {
+		if (lines == null) {
+			throw new IllegalStateException();
+		}
+		
+		return lines.get(line).wordCount();
+	}
+
 	public void addEmptyLine() throws UnsupportedOperationException, ClassCastException, IllegalStateException, NullPointerException, IllegalArgumentException {
 		if (lines == null) {
 			throw new IllegalStateException();

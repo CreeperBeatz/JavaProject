@@ -48,6 +48,6 @@ public final class LineParser {
 			}
 		);
 
-		return (Word[]) list.toArray();
+		return (Word[]) list.toArray(Word[]::new);
 	}
 }
