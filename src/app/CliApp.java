@@ -1,5 +1,6 @@
 package app;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
@@ -18,63 +19,85 @@ public final class CliApp {
     }
 
     public static void run() {
-        while (true) {
-            System.out.print("Please enter path to a plain text (e.g.: *.txt) file: ");
+        try {
+            while (true) {
+                System.out.print("Please enter path to a plain text file (*.txt): ");
 
-            try (AppCore appCore = new AppCore(input.nextLine())) {
-                System.out.println();
+                File filepath = new File(input.nextLine());
 
-                boolean loop = true;
+                if (!filepath.getName().endsWith(".txt")) {
+                    System.err.println("Please select plain text file (*.txt)!");
 
-                do {
-                    System.out.println("Content:");
-                    System.out.println(appCore.getContentString());
+                    continue;
+                }
+
+                if (!filepath.canRead()) {
+                    System.err.println("Cannot read the content of the file!");
+
+                    continue;
+                }
+
+                if (!filepath.canWrite()) {
+                    System.err.println("Cannot write content to the file!");
+
+                    continue;
+                }
+
+                try (AppCore appCore = new AppCore(filepath.getAbsolutePath())) {
                     System.out.println();
-                    System.out.println("Please select an option from below:\n(1) Swap two lines\n(2) Swap two words\n(3) Add new line\n(4) Remove last line [has to be empty]\n(5) Select another file\n(6) Exit\n");
 
-                    switch (inputNumber()) {
-                    case 1:
-                        swapLines(appCore);
-                        break;
-                    case 2:
-                        swapWords(appCore);
-                        break;
-                    case 3:
-                        appCore.addEmptyLine();
-                        break;
-                    case 4:
-                        if (appCore.isEmpty()) {
-                            System.err.println("There are no lines!");
-                        } else if (!appCore.isLastLineEmpty()) {
-                            System.err.println("Last line is not empty!");
-                        } else {
-                            appCore.removeLastLine();
+                    boolean loop = true;
+
+                    do {
+                        System.out.println("Content:");
+                        System.out.println(appCore.getContentString());
+                        System.out.println();
+                        System.out.println("Please select an option from below:\n(1) Swap two lines\n(2) Swap two words\n(3) Add new line\n(4) Remove last line [has to be empty]\n(5) Select another file\n(6) Exit\n");
+
+                        switch (inputNumber()) {
+                        case 1:
+                            swapLines(appCore);
+                            break;
+                        case 2:
+                            swapWords(appCore);
+                            break;
+                        case 3:
+                            appCore.addEmptyLine();
+                            break;
+                        case 4:
+                            if (appCore.isEmpty()) {
+                                System.err.println("There are no lines!");
+                            } else if (!appCore.isLastLineEmpty()) {
+                                System.err.println("Last line is not empty!");
+                            } else {
+                                appCore.removeLastLine();
+                            }
+                            break;
+                        case 5:
+                            loop = false;
+                            break;
+                        case 6:
+                            // Writes down the new content and closes the file.
+                            appCore.close();
+                            return;
+                        default:
+                            break;
                         }
-                        break;
-                    case 5:
-                        loop = false;
-                        break;
-                    case 6:
-                        // Writes down the new content and closes the file.
-                        appCore.close();
-                        return;
-                    default:
+                    } while (loop);
+                } catch (FileNotFoundException exception) {
+                    if (!continueUsing("Cannot open specified file!")) {
                         break;
                     }
-                } while (loop);
-            } catch (FileNotFoundException exception) {
-                if (!continueUsing("Cannot open specified file!")) {
-                    break;
+                } catch (IOException exception) {
+                    System.err.println("Cannot write down the new content to the file!");
+
+                    return;
                 }
-            } catch (IOException exception) {
-                System.err.println("Cannot write down the new content to the file!");
-
-                return;
-            } catch (SecurityException exception) {
-                System.err.println("Cannot operate on file die to security exception!");
-
-                return;
             }
+         } catch (SecurityException exception) {
+            System.err.println("Cannot operate on file die to security exception!");
+
+            return;
         }
     }
 
