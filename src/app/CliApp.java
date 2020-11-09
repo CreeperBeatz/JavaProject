@@ -78,55 +78,47 @@ public final class CliApp {
     }
 
     private static void swapLines(AppCore appCore) {
-        int firstLine, secondLine;
+        if (appCore.lineCount() < 2) {
+            System.err.println("Not enough lines to perform a swap!");
 
-        do {
-            System.out.print("Enter first line's number: ");
-
-            firstLine = inputNumber() - 1;
-
-            if (appCore.isLineInBounds(firstLine)) {
-                break;
-            } else {
-                System.err.println("Please enter a line number between 1 and the number of lines!");
-            }
-        } while (true);
-
-        do {
-            System.out.print("Enter second line's number: ");
-
-            secondLine = inputNumber() - 1;
-
-            if (appCore.isLineInBounds(secondLine)) {
-                break;
-            } else {
-                System.err.println("Please enter a line number between 1 and the number of lines!");
-            }
-        } while (true);
-
-        try {
-            appCore.swapLines(firstLine, secondLine);
-        } catch (IndexOutOfBoundsException exception) {
-            System.out.println("No such line(s)!");
+            return;
         }
+
+        int firstLine = inputLineNumber(appCore, "first");
+
+        int secondLine = inputLineNumber(appCore, "second");
+
+        appCore.swapLines(firstLine, secondLine);
     }
 
     private static void swapWords(AppCore appCore) {
-        int firstLine, firstWord, secondLine, secondWord;
+        {
+            int totalWordCount = 0;
 
-        firstLine = inputLineNumber(appCore, "first");
+            for (int z = 0; z < appCore.lineCount(); ++z) {
+                totalWordCount += appCore.wordCountOnLine(z);
 
-        firstWord = inputWordNumber(appCore, firstLine, "first");
+                if (totalWordCount > 1) {
+                    break;
+                }
+            }
 
-        secondLine = inputLineNumber(appCore, "second");
+            if (totalWordCount < 2) {
+                System.err.println("Not enough words to perform a swap!");
 
-        secondWord = inputWordNumber(appCore, secondLine, "second");
-
-        try {
-            appCore.swapWords(firstLine - 1, firstWord - 1, secondLine - 1, secondWord - 1);
-        } catch (IndexOutOfBoundsException exception) {
-            // All indexes are bound checked.
+                return;
+            }
         }
+
+        int firstLine = inputLineNumber(appCore, "first");
+
+        int firstWord = inputWordNumber(appCore, firstLine, "first");
+
+        int secondLine = inputLineNumber(appCore, "second");
+
+        int secondWord = inputWordNumber(appCore, secondLine, "second");
+
+        appCore.swapWords(firstLine - 1, firstWord - 1, secondLine - 1, secondWord - 1);
     }
 
     private static boolean continueUsing(String message) {
