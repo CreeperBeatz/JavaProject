@@ -1,3 +1,5 @@
+package app.core.utils;
+
 import java.util.ArrayList;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
@@ -8,7 +10,7 @@ import java.util.regex.Pattern;
  * 
  * This class is not extendable nor instanciatable as it is only a single function utility class.
  */
-public final class LineParser {
+final class LineParser {
 	private static final Pattern wordPattern = Pattern.compile("\\w+");
 
 	/**
@@ -19,7 +21,7 @@ public final class LineParser {
 		super();
 	}
 
-	public static Word[] getWords(Line line, int maxCount) {
+	static Word[] getWords(Line line, int maxCount) {
 		Matcher matcher = wordPattern.matcher(line.getLine());
 
 		ArrayList<Word> list = new ArrayList<Word>();
@@ -35,7 +37,7 @@ public final class LineParser {
 		return list.toArray(Word[]::new);
 	}
 
-	public static Word[] getWords(Line line) {
+	static Word[] getWords(Line line) {
 		Matcher matcher = wordPattern.matcher(line.getLine());
 
 		ArrayList<Word> list = new ArrayList<Word>();

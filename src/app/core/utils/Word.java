@@ -1,8 +1,10 @@
-public final class Word {
+package app.core.utils;
+
+final class Word {
 	private int offset;
 	private int length;
 
-	public Word(int offset, int length) throws IndexOutOfBoundsException {
+	Word(int offset, int length) throws IndexOutOfBoundsException {
 		super();
 
 		if (offset < 0) {
@@ -16,32 +18,32 @@ public final class Word {
 		this.length = length;
 	}
 
-	public int getStartOffset() {
+	int getStartOffset() {
 		return offset;
 	}
 
-	public int getEndOffset() {
+	int getEndOffset() {
 		return offset + length;
 	}
 
-	public int getLength() {
+	int getLength() {
 		return length;
 	}
 
-	public void offsetWord(int offset) throws IndexOutOfBoundsException {
+	void offsetWord(int offset) throws IndexOutOfBoundsException {
 		if (this.offset + offset < 0) {
 			throw new IndexOutOfBoundsException(this.offset + offset);
 		}
 		this.offset += offset;
 	}
 
-	public void swapLengths(Word other) throws NullPointerException {
+	void swapLengths(Word other) throws NullPointerException {
 		int temp = length;
 		length = other.length;
 		other.length = temp;
 	}
 
-	public String getWord(String line) throws NullPointerException, IndexOutOfBoundsException {
+	String getWord(String line) throws NullPointerException, IndexOutOfBoundsException {
 		return line.substring(getStartOffset(), getEndOffset());
 	}
 

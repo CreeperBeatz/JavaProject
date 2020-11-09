@@ -1,7 +1,10 @@
-import java.awt.HeadlessException;
+package app;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
+
+import app.core.AppCore;
 
 public final class CliApp {
     private static final Scanner input;
@@ -14,20 +17,7 @@ public final class CliApp {
         super();
     }
 
-    public static void main(String[] args) {
-        if (dialog("Do you want to use the GUI (Graphical User Interface) instead?")) {
-            // Start the GUI app
-            try {
-                new GuiApp();
-            } catch (HeadlessException exception) {
-                System.err.println("Cannot operate in graphical mode when there is no graphics environment available!");
-            }
-
-            return;
-        }
-
-        // Fallback to CLI app
-
+    public static void run() {
         while (true) {
             System.out.print("Please enter path to a plain text (e.g.: *.txt) file: ");
 
@@ -153,10 +143,11 @@ public final class CliApp {
     }
 
     /**
+     * Makes Console Line Interface (CLI) dialog with "Yes" and "No" answers.
      * @param message
      * @return Returns true when "Yes" is selected and false when "No" is selected.
      */
-    private static boolean dialog(String message) {
+    public static boolean dialog(String message) {
         if (message != null) {
             System.out.print(message);
 

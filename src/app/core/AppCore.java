@@ -1,8 +1,13 @@
+package app.core;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+
+import app.core.utils.Line;
+import app.core.utils.LineReader;
 
 public final class AppCore implements AutoCloseable {
 	private final String filename;
@@ -135,7 +140,7 @@ public final class AppCore implements AutoCloseable {
 			throw new IllegalStateException();
 		}
 
-		lines.add(new Line());
+		lines.add(Line.empty());
 	}
 
 	public boolean isLastLineEmpty() throws IllegalStateException {

@@ -1,3 +1,5 @@
+package app.core.utils;
+
 /**
  * Represents a line.
  */
@@ -6,17 +8,21 @@ public final class Line {
 	private Word[] words = {};
 	private boolean allWordsParsed;
 
-	public Line() {
+	Line() {
 		super();
 
 		line = "";
 	}
 	
-	public Line(String line) {
+	Line(String line) {
 		super();
 
 		this.line = line;
 		allWordsParsed = false;
+	}
+
+	public static Line empty() {
+		return new Line();
 	}
 
 	public boolean isEmpty() {
