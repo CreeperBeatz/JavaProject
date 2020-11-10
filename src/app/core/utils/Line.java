@@ -6,7 +6,7 @@ package app.core.utils;
 public final class Line {
 	private String line;
 	private Word[] words = {};
-	private boolean allWordsParsed;
+	private boolean allWordsParsed = false;
 
 	Line() {
 		super();
@@ -18,7 +18,6 @@ public final class Line {
 		super();
 
 		this.line = line;
-		allWordsParsed = false;
 	}
 
 	public static Line empty() {
