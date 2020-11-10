@@ -81,7 +81,7 @@ public final class Line {
 			}
 		}
 
-		return words.length == 0;
+		return words.length != 0;
 	}
 
 	/**

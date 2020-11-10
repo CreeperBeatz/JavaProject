@@ -37,7 +37,7 @@ final class GuiWordInput {
 		int wordNumber = 1;
 
 		for (int z = 0; z < options.length; ++z) {
-			if (wordNumber == z + 1) {
+			if (wordNumber == word + 1) {
 				wordNumber += 1;
 			}
 
