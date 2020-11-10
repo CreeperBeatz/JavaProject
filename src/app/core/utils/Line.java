@@ -1,20 +1,29 @@
 package app.core.utils;
 
 /**
- * Represents a line.
+ * Represents a line and it's words, if any.
  */
 public final class Line {
 	private String line;
 
+	// No words are parsed when the object is created so this is valid for all instances have this values in the beginning.
 	private Word[] words = {};
 	private boolean allWordsParsed = false;
 
+	/**
+	 * Constructor for an empty line.
+	 */
 	Line() {
 		super();
 
 		line = "";
 	}
 	
+	/**
+	 * Contructor for a line from a string.
+	 * @param line The string which the instance will reference.
+	 * @throws IllegalArgumentException Thrown when the line contains multiple lines.
+	 */
 	Line(String line) throws IllegalArgumentException {
 		super();
 
@@ -25,18 +34,36 @@ public final class Line {
 		this.line = line;
 	}
 
+	/**
+	 * Creates an instance referencing an empty line.
+	 * @return A non-null reference to Line.
+	 */
 	public static Line empty() {
 		return new Line();
 	}
 
+	/**
+	 * Calling this is equivalent to {@code getLine().isEmpty()}.
+	 * @return True when the line is empty. Otherwise, false.
+	 * @apiNote This is not the same as word count! To check whether the line contains words use {@code hasWords}.
+	 */
 	public boolean isEmpty() {
 		return line.isEmpty();
 	}
 
+	/**
+	 * Returns a reference to the string referenced by the current instance.
+	 * @return A non-null reference to the referenced string.
+	 */
 	public String getLine() {
 		return line;
 	}
 
+	/**
+	 * Checks whether the line has any words.
+	 * @return
+	 * True when the line has at least one word. Otherwise, false.
+	 */
 	public boolean hasWords() {
 		if (!allWordsParsed) {
 			if (words.length == 0) {
@@ -57,6 +84,10 @@ public final class Line {
 		return words.length == 0;
 	}
 
+	/**
+	 * Parses the whole line and collects the words.
+	 * @return The word count of the line.
+	 */
 	public int wordCount() {
 		if (!allWordsParsed) {
 			words = LineParser.getWords(this);
@@ -67,6 +98,11 @@ public final class Line {
 		return words.length;
 	}
 
+	/**
+	 * Parses the whole line and collects the words.
+	 * @param max The maximum amount of words for which words should be parsed, if not already done.
+	 * @return The word count of the line.
+	 */
 	public int wordCount(int max) {
 		if (max < 0) {
 			return 0;
@@ -85,6 +121,11 @@ public final class Line {
 		return words.length;
 	}
 
+	/**
+	 * Checks whether the word index is in the bounds of the line.
+	 * @param word Index of the word.
+	 * @return True when the word index is in bounds. Otherwise, false.
+	 */
 	public boolean isWordInBounds(int word) {
 		if (word < 0 || word + 1 < 0) {
 			return false;
@@ -104,6 +145,15 @@ public final class Line {
 
 		return word < words.length;
 	}
+
+	/**
+	 * Internal implementation for swapping words.
+	 * This variant swaps two words which are both in the current line.
+	 * @param leftWordIndex Index of the word that is on the left side.
+	 * @param rightWordIndex Index of the word that is on the right side.
+	 * @throws IndexOutOfBoundsException Thrown when the indexes are out of bounds.
+	 * @apiNote {@code leftWordIndex} is assumed to be less or equal to {@code rightWordIndex}.
+	 */
 	private void swapOwnWords(int leftWordIndex, int rightWordIndex) throws IndexOutOfBoundsException {
 		// Check whether the word map is already generated until the right word's index.
 		if (!allWordsParsed) {
@@ -156,6 +206,15 @@ public final class Line {
 		}
 	}
 
+	/**
+	 * Internal implementation for swapping words.
+	 * This variant swaps words which are in different lines.
+	 * @param otherLine Reference to the other instance with which the words will be swapped.
+	 * @param ownWordIndex Index of the word contained by the current line.
+	 * @param otherWordIndex Index of the word contained by the other line.
+	 * @throws IndexOutOfBoundsException Thrown when the indexes are out of bounds.
+	 * @apiNote {@code otherLine} is assumed to be a reference to a different object.
+	 */
 	private void swapOwnAndOtherWords(Line otherLine, int ownWordIndex, int otherWordIndex) throws IndexOutOfBoundsException {
 		// Check whether the word map is already generated until the word's index.
 		if (!allWordsParsed) {
@@ -252,6 +311,13 @@ public final class Line {
 		ownWord.swapLengths(otherWord);
 	}
 
+	/**
+	 * Swaps two words within the same instance or two different instances.
+	 * @param otherLine The other instance with which words will be swapped.
+	 * @param ownWordIndex Index of the word contained by the current instance.
+	 * @param otherWordIndex Index of the word contained by the other instance.
+	 * @throws IndexOutOfBoundsException Thrown when the indexes are out of bounds.
+	 */
 	public void swapWords(Line otherLine, int ownWordIndex, int otherWordIndex) throws IndexOutOfBoundsException {
 		// Compare addresses to check whether it's the same object.
 		if (this == otherLine) {
