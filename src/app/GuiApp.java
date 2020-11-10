@@ -75,7 +75,7 @@ public final class GuiApp extends JFrame {
 			{
 				JButton button = new JButton("Add Empty Line");
 
-				button.addMouseListener(GuiHandlers.addEmptyLineHandler(this, appCore));
+				button.addMouseListener(GuiHandlers.addEmptyLineHandler(this));
 
 				bottomPanel.add(button);
 			}
@@ -83,7 +83,7 @@ public final class GuiApp extends JFrame {
 			{
 				JButton button = new JButton("Remove Last Line");
 
-				button.addMouseListener(GuiHandlers.removeLastLineHandler(this, appCore));
+				button.addMouseListener(GuiHandlers.removeLastLineHandler(this));
 
 				bottomPanel.add(button);
 			}
@@ -91,7 +91,7 @@ public final class GuiApp extends JFrame {
 			{
 				JButton button = new JButton("Swap Lines");
 
-				button.addMouseListener(GuiHandlers.swapLinesHandler(this, appCore));
+				button.addMouseListener(GuiHandlers.swapLinesHandler(this));
 
 				bottomPanel.add(button, BorderLayout.WEST);
 			}
@@ -99,7 +99,7 @@ public final class GuiApp extends JFrame {
 			{
 				JButton button = new JButton("Swap Words");
 
-				button.addMouseListener(GuiHandlers.swapWordsHandler(this, appCore));
+				button.addMouseListener(GuiHandlers.swapWordsHandler(this));
 
 				bottomPanel.add(button, BorderLayout.EAST);
 			}
@@ -107,7 +107,7 @@ public final class GuiApp extends JFrame {
 			add(bottomPanel, BorderLayout.SOUTH);
 		}
 
-		addWindowListener(GuiHandlers.defaultWindowListener(this, appCore));
+		addWindowListener(GuiHandlers.defaultWindowListener(this));
 
 		setVisible(true);
 	}
@@ -162,6 +162,10 @@ public final class GuiApp extends JFrame {
 		}
 	}
 
+	AppCore getSession() {
+		return appCore;
+	}
+
 	private static void addFilePathLabel(Container container) {
 		container.add(new JLabel("File: "), BorderLayout.WEST);
 	}
@@ -179,7 +183,7 @@ public final class GuiApp extends JFrame {
 	private void addChooseFile(Container container) {
 		JButton button = new JButton("Choose File");
 
-		button.addMouseListener(GuiHandlers.chooseFileHandler(this, appCore));
+		button.addMouseListener(GuiHandlers.chooseFileHandler(this));
 
 		container.add(button, BorderLayout.EAST);
 	}

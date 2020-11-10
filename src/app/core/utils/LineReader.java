@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public final class LineReader {
 	private final FileReader input;
@@ -66,6 +65,11 @@ public final class LineReader {
 				}
 			};
 
+			if (line.isEmpty()) {
+				return Line.empty();
+			}
+
+			// Will not throw "IllegalArgumentException" as this class parses until the end of the line.
 			return new Line(line.toString());
 		}
 	}
@@ -74,8 +78,8 @@ public final class LineReader {
 	 * Reads the file until End-Of-File (EOF) is encountered.
 	 * @return List of the lines from the file.
 	 */
-	public List<Line> getLines() throws IOException {
-		List<Line> list = new ArrayList<Line>();
+	public ArrayList<Line> getLines() throws IOException {
+		ArrayList<Line> list = new ArrayList<Line>();
 
 		while (!isFinished()) {
 			list.add(getLine());

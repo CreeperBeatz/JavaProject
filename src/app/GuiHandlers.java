@@ -18,13 +18,15 @@ final class GuiHandlers {
 		super();
 	}
 
-	static WindowListener defaultWindowListener(GuiApp app, AppCore appCore) {
+	static WindowListener defaultWindowListener(GuiApp app) {
 		return new WindowListener() {
 			@Override
 			public void windowOpened(WindowEvent e) {}
 
 			@Override
 			public void windowClosing(WindowEvent e) {
+				AppCore appCore = app.getSession();
+
 				if (appCore != null) {
 					try {
 						appCore.close();
@@ -54,7 +56,7 @@ final class GuiHandlers {
 		};
 	}
 
-	static MouseListener addEmptyLineHandler(GuiApp app, AppCore appCore) {
+	static MouseListener addEmptyLineHandler(GuiApp app) {
 		return new MouseListener() {
 			private boolean withinControl = false;
 
@@ -76,6 +78,8 @@ final class GuiHandlers {
 				if ((e.getButton() & MouseEvent.BUTTON1) != MouseEvent.BUTTON1 || !withinControl) {
 					return;
 				}
+
+				AppCore appCore = app.getSession();
 
 				if (appCore == null) {
 					GuiErrors.errorOpenFile(app);
@@ -93,7 +97,7 @@ final class GuiHandlers {
 		};
 	}
 
-	static MouseListener removeLastLineHandler(GuiApp app, AppCore appCore) {
+	static MouseListener removeLastLineHandler(GuiApp app) {
 		return new MouseListener() {
 			private boolean withinControl = false;
 
@@ -115,6 +119,8 @@ final class GuiHandlers {
 				if ((e.getButton() & MouseEvent.BUTTON1) != MouseEvent.BUTTON1 || !withinControl) {
 					return;
 				}
+
+				AppCore appCore = app.getSession();
 
 				if (appCore == null) {
 					GuiErrors.errorOpenFile(app);
@@ -144,7 +150,7 @@ final class GuiHandlers {
 		};
 	}
 
-	static MouseListener swapLinesHandler(GuiApp app, AppCore appCore) {
+	static MouseListener swapLinesHandler(GuiApp app) {
 		return new MouseListener() {
 			private boolean withinControl = false;
 
@@ -166,6 +172,8 @@ final class GuiHandlers {
 				if ((e.getButton() & MouseEvent.BUTTON1) != MouseEvent.BUTTON1 || !withinControl) {
 					return;
 				}
+
+				AppCore appCore = app.getSession();
 
 				if (appCore == null) {
 					GuiErrors.errorOpenFile(app);
@@ -197,7 +205,7 @@ final class GuiHandlers {
 		};
 	}
 
-	static MouseListener swapWordsHandler(GuiApp app, AppCore appCore) {
+	static MouseListener swapWordsHandler(GuiApp app) {
 		return new MouseListener() {
 			private boolean withinControl = false;
 
@@ -220,6 +228,8 @@ final class GuiHandlers {
 					return;
 				}
 
+				AppCore appCore = app.getSession();
+
 				if (appCore == null) {
 					GuiErrors.errorOpenFile(app);
 
@@ -230,7 +240,7 @@ final class GuiHandlers {
 					int totalWordCount = 0;
 
 					for (int z = 0; z < appCore.lineCount(); ++z) {
-						totalWordCount += appCore.wordCountOnLine(z);
+						totalWordCount += appCore.wordCountOnLine(z, 2 - totalWordCount);
 
 						if (totalWordCount > 1) {
 							break;
@@ -270,7 +280,7 @@ final class GuiHandlers {
 		};
 	}
 
-	static MouseListener chooseFileHandler(GuiApp app, AppCore appCore) {
+	static MouseListener chooseFileHandler(GuiApp app) {
 		return new MouseListener() {
 			private boolean withinControl = false;
 

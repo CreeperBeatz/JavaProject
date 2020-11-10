@@ -120,7 +120,7 @@ public final class CliApp {
             int totalWordCount = 0;
 
             for (int z = 0; z < appCore.lineCount(); ++z) {
-                totalWordCount += appCore.wordCountOnLine(z);
+                totalWordCount += appCore.wordCountOnLine(z, 2 - totalWordCount);
 
                 if (totalWordCount > 1) {
                     break;

@@ -4,15 +4,16 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
+import java.util.ArrayList;
 
 import app.core.utils.Line;
 import app.core.utils.LineReader;
 
 public final class AppCore implements AutoCloseable {
-	private final String filename;
-	private List<Line> lines;
 	private static final String closedMessage;
+
+	private final String filePath;
+	private ArrayList<Line> lines;
 
 	static {
 		closedMessage = "Content already written down and closed!";
@@ -25,30 +26,30 @@ public final class AppCore implements AutoCloseable {
 	 * @throws SecurityException
 	 * @throws InvalidContentException
 	 */
-	public AppCore(String filename) throws FileNotFoundException, SecurityException, IOException {
+	public AppCore(String filePath) throws FileNotFoundException, SecurityException, IOException {
 		super();
 
-		this.filename = filename;
-		lines = new LineReader(filename).getLines();
+		this.filePath = filePath;
+		lines = new LineReader(filePath).getLines();
 	}
 
-	public String getFilename() {
-		return filename;
+	public String getFilePath() {
+		return filePath;
 	}
 
-	public void swapWords(int firstLine, int firstWord, int secondLine, int secondWord) throws IndexOutOfBoundsException, IllegalStateException {
+	public void swapWords(int firstLineIndex, int firstWordIndex, int secondLineIndex, int secondWordIndex) throws IllegalStateException, IndexOutOfBoundsException {
 		if (lines == null) {
 			throw new IllegalStateException();
 		}
 
 		try {
-			lines.get(firstLine).swapWords(lines.get(secondLine), firstWord, secondWord);
+			lines.get(firstLineIndex).swapWords(lines.get(secondLineIndex), firstWordIndex, secondWordIndex);
 		} catch (NullPointerException exception) {
 			throw new IllegalStateException(closedMessage);
 		}
 	}
 
-	public void swapLines(int firstLine, int secondLine) throws IndexOutOfBoundsException, IllegalStateException {
+	public void swapLines(int firstLine, int secondLine) throws IllegalStateException, IndexOutOfBoundsException {
 		if (lines == null) {
 			throw new IllegalStateException();
 		}
@@ -65,28 +66,32 @@ public final class AppCore implements AutoCloseable {
 		}
 	}
 
-	public boolean isLineInBounds(int line) throws IllegalStateException {
+	public boolean isLineInBounds(int lineIndex) throws IllegalStateException {
 		if (lines == null) {
 			throw new IllegalStateException();
 		}
 
-		if (0 <= line && line < lines.size()) {
+		if (0 <= lineIndex && lineIndex < lines.size()) {
 			return true;
 		}
 
 		return false;
 	}
 
-	public boolean isWordInBounds(int line, int word) throws IllegalStateException, IndexOutOfBoundsException {
+	public boolean isWordInBounds(int lineIndex, int wordIndex) throws IllegalStateException, IndexOutOfBoundsException {
 		if (lines == null) {
 			throw new IllegalStateException();
 		}
 
-		return lines.get(line).isWordInBounds(word);
+		return lines.get(lineIndex).isWordInBounds(wordIndex);
 	}
 
-	public boolean lineHasWords(int line) throws IllegalStateException, IndexOutOfBoundsException {
-		return isWordInBounds(line, 0);
+	public boolean lineHasWords(int lineIndex) throws IllegalStateException, IndexOutOfBoundsException {
+		if (lines == null) {
+			throw new IllegalStateException();
+		}
+
+		return lines.get(lineIndex).hasWords();
 	}
 
 	public String getContentString() throws IllegalStateException {
@@ -127,15 +132,31 @@ public final class AppCore implements AutoCloseable {
 		return lines.size();
 	}
 
-	public int wordCountOnLine(int line) throws IllegalStateException, IndexOutOfBoundsException {
+	public boolean hasWordsOnLine(int lineIndex) throws IllegalStateException, IndexOutOfBoundsException {
 		if (lines == null) {
 			throw new IllegalStateException();
 		}
-		
-		return lines.get(line).wordCount();
+
+		return lines.get(lineIndex).hasWords();
 	}
 
-	public void addEmptyLine() throws UnsupportedOperationException, ClassCastException, IllegalStateException, NullPointerException, IllegalArgumentException {
+	public int wordCountOnLine(int lineIndex) throws IllegalStateException, IndexOutOfBoundsException {
+		if (lines == null) {
+			throw new IllegalStateException();
+		}
+
+		return lines.get(lineIndex).wordCount();
+	}
+
+	public int wordCountOnLine(int lineIndex, int maxCount) throws IllegalStateException, IndexOutOfBoundsException {
+		if (lines == null) {
+			throw new IllegalStateException();
+		}
+
+		return lines.get(lineIndex).wordCount(maxCount);
+	}
+
+	public void addEmptyLine() throws IllegalStateException {
 		if (lines == null) {
 			throw new IllegalStateException();
 		}
@@ -155,9 +176,13 @@ public final class AppCore implements AutoCloseable {
 		return lines.get(lines.size() - 1).isEmpty();
 	}
 
-	public void removeLastLine() throws IllegalStateException {
+	public void removeLastLine() throws IllegalStateException, NoSuchElementException {
 		if (lines == null) {
 			throw new IllegalStateException();
+		}
+
+		if (lines.isEmpty()) {
+			throw new NoSuchElementException("Cannot remove any lines because there aren't any.");
 		}
 
 		lines.remove(lines.size() - 1);
@@ -168,11 +193,11 @@ public final class AppCore implements AutoCloseable {
 		if (lines == null) {
 			return;
 		}
-		
+
 		OutputStream file = null;
-		
+
 		try {
-			file = new FileOutputStream(filename);
+			file = new FileOutputStream(filePath);
 
 			if (lines.size() != 0) {
 				file.write(lines.get(0).getLine().getBytes());

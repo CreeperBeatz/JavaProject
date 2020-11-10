@@ -52,8 +52,10 @@ final class GuiLineInput {
 	private static Integer[] inputLineOptionsForWords(AppCore appCore) {
 		ArrayList<Integer> options = new ArrayList<Integer>();
 
-		for (int z = 0; z < appCore.lineCount(); ++z) {
-			if (appCore.wordCountOnLine(z) > 0) {
+		int lineCount = appCore.lineCount();
+
+		for (int z = 0; z < lineCount; ++z) {
+			if (appCore.hasWordsOnLine(z)) {
 				options.add(Integer.valueOf(z + 1));
 			}
 		}
@@ -65,7 +67,9 @@ final class GuiLineInput {
 		ArrayList<Integer> options = new ArrayList<Integer>();
 
 		for (int z = 0; z < appCore.lineCount(); ++z) {
-			if (appCore.wordCountOnLine(z) - (line == z ? 1 : 0) > 0) {
+			int tempResult = line == z ? 1 : 0;
+
+			if (appCore.wordCountOnLine(z, 1 + tempResult) > tempResult) {
 				options.add(Integer.valueOf(z + 1));
 			}
 		}

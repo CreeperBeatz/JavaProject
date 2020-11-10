@@ -11,7 +11,11 @@ import java.util.regex.Pattern;
  * This class is not extendable nor instanciatable as it is only a single function utility class.
  */
 final class LineParser {
-	private static final Pattern wordPattern = Pattern.compile("\\w+");
+	private static final Pattern wordPattern;
+	
+	static {
+		wordPattern = Pattern.compile("(?!\\d)\\w+");
+	}
 
 	/**
 	 * Because the constructor is private, this will ensure that the class doesn't get instanciated.
@@ -21,7 +25,21 @@ final class LineParser {
 		super();
 	}
 
-	static Word[] getWords(Line line, int maxCount) {
+	static Word[] getWords(Line line) {
+		Matcher matcher = wordPattern.matcher(line.getLine());
+
+		ArrayList<Word> list = new ArrayList<Word>();
+
+		while (matcher.find()) {
+			final int start = matcher.start();
+
+			list.add(new Word(start, matcher.end() - start));
+		}
+
+		return list.toArray(Word[]::new);
+	}
+
+	static Word[] getWords(Line line, int maxCount) throws IllegalArgumentException {
 		Matcher matcher = wordPattern.matcher(line.getLine());
 
 		ArrayList<Word> list = new ArrayList<Word>();
@@ -35,21 +53,5 @@ final class LineParser {
 		);
 
 		return list.toArray(Word[]::new);
-	}
-
-	static Word[] getWords(Line line) {
-		Matcher matcher = wordPattern.matcher(line.getLine());
-
-		ArrayList<Word> list = new ArrayList<Word>();
-
-		matcher.results().forEach(
-			(MatchResult result) -> {
-				final int start = matcher.start();
-
-				list.add(new Word(start, matcher.end() - start));
-			}
-		);
-
-		return (Word[]) list.toArray(Word[]::new);
 	}
 }
