@@ -60,6 +60,26 @@ public final class Line {
 	}
 
 	/**
+	 * Extracts and returns the word with the given index.
+	 * @param word Index of the word to be extracted and returned.
+	 * @return A non-null reference to a string containing the word at the given index.
+	 * @throws IndexOutOfBoundsException Thrown when the word index is out of bounds.
+	 */
+	public String getWord(int word) throws IndexOutOfBoundsException {
+		if (!allWordsParsed) {
+			if (words.length < word + 1) {
+				words = LineParser.getWords(this, word + 1);
+
+				if (words.length < word + 1) {
+					allWordsParsed = true;
+				}
+			}
+		}
+
+		return words[word].getWord(line);
+	}
+
+	/**
 	 * Checks whether the line has any words.
 	 * @return
 	 * True when the line has at least one word. Otherwise, false.

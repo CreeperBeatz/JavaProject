@@ -93,6 +93,22 @@ public final class AppCore implements AutoCloseable {
 	}
 
 	/**
+	 * Extracts and returns a given word from a given line.
+	 * @param line The index of the line on which the operation will be performed.
+	 * @param word The index of the word which will be extracted and returned.
+	 * @return A non-null reference to a string containing the word at the given index.
+	 * @throws IllegalStateException Thrown when the session is closed (through {@code close}) and the new content is written down.
+	 * @throws IndexOutOfBoundsException Thrown when the indexes are out of bounds.
+	 */
+	public String getWord(int line, int word) throws IllegalStateException, IndexOutOfBoundsException {
+		if (lines == null) {
+			throw new IllegalStateException();
+		}
+
+		return lines.get(line).getWord(word);
+	}
+
+	/**
 	 * Checks whether the given line index is in bounds.
 	 * @param lineIndex The line index to be checked.
 	 * @return True when "lineIndex" is in bounds. Otherwise, false.
