@@ -26,19 +26,25 @@ public final class CliApp {
                 File filepath = new File(input.nextLine());
 
                 if (!filepath.getName().endsWith(".txt")) {
-                    System.err.println("Please select plain text file (*.txt)!");
+                    if (!continueUsing("Selected a file that is not plain text (*.txt)!")) {
+                        break;
+                    }
 
                     continue;
                 }
 
                 if (!filepath.canRead()) {
-                    System.err.println("Cannot read the content of the file!");
+                    if (!continueUsing("Cannot read the content of the file!")) {
+                        break;
+                    }
 
                     continue;
                 }
 
                 if (!filepath.canWrite()) {
-                    System.err.println("Cannot write content to the file!");
+                    if (!continueUsing("Cannot write content to the file!")) {
+                        break;
+                    }
 
                     continue;
                 }
