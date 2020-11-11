@@ -58,7 +58,7 @@ public final class CliApp {
                         System.out.println("Content:");
                         System.out.println(appCore.getContentString());
                         System.out.println();
-                        System.out.println("Please select an option from below:\n(1) Swap two lines\n(2) Swap two words\n(3) Add new line\n(4) Remove last line [has to be empty]\n(5) Select another file\n(6) Exit\n");
+                        System.out.println("Please select an option from below:\n(1) Swap two lines\n(2) Swap two words\n(3) Add new empty line\n(4) Remove last line [has to be empty]\n(5) Select another file\n(6) Exit\n");
 
                         switch (inputNumber()) {
                         case 1:
@@ -100,7 +100,7 @@ public final class CliApp {
                     return;
                 }
             }
-         } catch (SecurityException exception) {
+        } catch (SecurityException exception) {
             System.err.println("Cannot operate on file die to security exception!");
 
             return;
