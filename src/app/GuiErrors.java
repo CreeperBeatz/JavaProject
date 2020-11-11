@@ -7,7 +7,7 @@ final class GuiErrors {
 		super();
 	}
 
-	private static void showErrorMessage(GuiApp app, String message) {
+	private static void showErrorMessage(GuiApp app, Object message) {
 		JOptionPane.showMessageDialog(app, message, "Error", JOptionPane.ERROR_MESSAGE);
 	}
 
