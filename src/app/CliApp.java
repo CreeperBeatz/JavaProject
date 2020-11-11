@@ -175,9 +175,11 @@ public final class CliApp {
 
             // Not needed anymore.
             message = null;
+
+            System.out.print(" ");
         }
 
-        System.out.println(" (Y)es / (N)o");
+        System.out.println("(Y)es / (N)o");
 
         while (true) {
             String choice = input.nextLine().trim().toLowerCase();
