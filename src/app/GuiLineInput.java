@@ -6,11 +6,21 @@ import javax.swing.JOptionPane;
 
 import app.core.AppCore;
 
+/**
+ * A helper class containing methods for creating dialog windows requesting user input and perform line swapping.
+ */
 final class GuiLineInput {
 	private GuiLineInput() {
 		super();
 	}
 
+	/**
+	 * Base handler for creating an input dialog window.
+	 * @param app A reference to the application's instance to be used as dialog window's parent.
+	 * @param message Message to be displayed.
+	 * @param options Array of the available options for the dialog window.
+	 * @return An {@link java.lang.Integer} object holding the value of the selected option.
+	 */
 	private static Integer showDialog(GuiApp app, Object message, Integer[] options) {
 		return (Integer) JOptionPane.showInputDialog(
 			app,
@@ -23,6 +33,11 @@ final class GuiLineInput {
 		);
 	}
 
+	/**
+	 * This method generates an array of all the available lines that can be selected within the dialog window.
+	 * @param appCore An assumed to be non-null reference to the application's current session.
+	 * @return An array containing of {@link java.lang.Integer} objects holding the line numbers.
+	 */
 	private static Integer[] inputLineOptions(AppCore appCore) {
 		Integer[] options = new Integer[appCore.lineCount()];
 
@@ -33,6 +48,12 @@ final class GuiLineInput {
 		return options;
 	}
 
+	/**
+	 * This method generates an array of all the available lines (excluding the one given as an argument)
+	 * that can be selected within the dialog window.
+	 * @param appCore An assumed to be non-null reference to the application's current session.
+	 * @return An array containing of {@link java.lang.Integer} objects holding the line numbers.
+	 */
 	private static Integer[] inputLineOptionsExcluding(AppCore appCore, int line) {
 		Integer[] options = new Integer[appCore.lineCount() - 1];
 
@@ -49,6 +70,11 @@ final class GuiLineInput {
 		return options;
 	}
 
+	/**
+	 * This method generates an array of all the available lines which contain words that can be selected within the dialog window.
+	 * @param appCore An assumed to be non-null reference to the application's current session.
+	 * @return An array containing of {@link java.lang.Integer} objects holding the word numbers.
+	 */
 	private static Integer[] inputLineOptionsForWords(AppCore appCore) {
 		ArrayList<Integer> options = new ArrayList<Integer>();
 
@@ -63,6 +89,12 @@ final class GuiLineInput {
 		return options.toArray(Integer[]::new);
 	}
 
+	/**
+	 * This method generates an array of all the available lines which contain words (excluding the one given as an argument)
+	 * that can be selected within the dialog window.
+	 * @param appCore An assumed to be non-null reference to the application's current session.
+	 * @return An array containing of {@link java.lang.Integer} objects holding the word numbers.
+	 */
 	private static Integer[] inputLineOptionsForWordsExcluding(AppCore appCore, int line) {
 		ArrayList<Integer> options = new ArrayList<Integer>();
 

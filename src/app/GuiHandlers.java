@@ -13,11 +13,19 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import app.core.AppCore;
 
+/**
+ * A helper class containing methods for generating event handlers.
+ */
 final class GuiHandlers {
 	private GuiHandlers() {
 		super();
 	}
 
+	/**
+	 * Creates a window event listener which properly closes the session held by the application.
+	 * @param app An assumed to be non-null reference to the application.
+	 * @return A non-null reference to the newly created event listener.
+	 */
 	static WindowListener defaultWindowListener(GuiApp app) {
 		return new WindowListener() {
 			@Override
@@ -56,6 +64,11 @@ final class GuiHandlers {
 		};
 	}
 
+	/**
+	 * Creates a mouse event listener which handles adding new lines.
+	 * @param app An assumed to be non-null reference to the application.
+	 * @return A non-null reference to the newly created event listener.
+	 */
 	static MouseListener addEmptyLineHandler(GuiApp app) {
 		return new MouseListener() {
 			private boolean withinControl = false;
@@ -97,6 +110,11 @@ final class GuiHandlers {
 		};
 	}
 
+	/**
+	 * Creates a mouse event listener which handles removing the last line.
+	 * @param app An assumed to be non-null reference to the application
+	 * @return A non-null reference to the newly created event listener.
+	 */
 	static MouseListener removeLastLineHandler(GuiApp app) {
 		return new MouseListener() {
 			private boolean withinControl = false;
@@ -150,6 +168,11 @@ final class GuiHandlers {
 		};
 	}
 
+	/**
+	 * Creates a mouse event listener which handles line swapping.
+	 * @param app An assumed to be non-null reference to the application
+	 * @return A non-null reference to the newly created event listener.
+	 */
 	static MouseListener swapLinesHandler(GuiApp app) {
 		return new MouseListener() {
 			private boolean withinControl = false;
@@ -205,6 +228,11 @@ final class GuiHandlers {
 		};
 	}
 
+	/**
+	 * Creates a mouse event listener which handles word swapping.
+	 * @param app An assumed to be non-null reference to the application
+	 * @return A non-null reference to the newly created event listener.
+	 */
 	static MouseListener swapWordsHandler(GuiApp app) {
 		return new MouseListener() {
 			private boolean withinControl = false;
@@ -280,6 +308,11 @@ final class GuiHandlers {
 		};
 	}
 
+	/**
+	 * Creates a mouse event listener which handles opening a new file.
+	 * @param app An assumed to be non-null reference to the application
+	 * @return A non-null reference to the newly created event listener.
+	 */
 	static MouseListener chooseFileHandler(GuiApp app) {
 		return new MouseListener() {
 			private boolean withinControl = false;

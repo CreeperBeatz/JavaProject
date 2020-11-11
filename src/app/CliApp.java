@@ -7,6 +7,12 @@ import java.util.Scanner;
 
 import app.core.AppCore;
 
+/**
+ * Represents the Command Line Interface (CLI) variant of the application.
+ * This class is responsible for all the interfaces provided by the application's CLI variant.
+ * This is a utility class, therefore uninstantiable (from outside) nor inheritable.
+ * To use this class see the {@code run} method.
+ */
 public final class CliApp {
     private static final Scanner input;
 
@@ -18,6 +24,9 @@ public final class CliApp {
         super();
     }
 
+    /**
+     * This method is used to start the application in CLI mode.
+     */
     public static void run() {
         try {
             while (true) {
@@ -25,6 +34,7 @@ public final class CliApp {
 
                 File filepath = new File(input.nextLine());
 
+                // Make sure the extension is correct.
                 if (!filepath.getName().endsWith(".txt")) {
                     if (!continueUsing("Selected a file that is not plain text (*.txt)!")) {
                         break;
@@ -33,6 +43,7 @@ public final class CliApp {
                     continue;
                 }
 
+                // Make sure the file can be read.
                 if (!filepath.canRead()) {
                     if (!continueUsing("Cannot read the content of the file!")) {
                         break;
@@ -41,6 +52,7 @@ public final class CliApp {
                     continue;
                 }
 
+                // Make sure the file can be written.
                 if (!filepath.canWrite()) {
                     if (!continueUsing("Cannot write content to the file!")) {
                         break;
@@ -62,15 +74,19 @@ public final class CliApp {
 
                         switch (inputNumber()) {
                         case 1:
+                            // Swap two lines
                             swapLines(appCore);
                             break;
                         case 2:
+                            // Swap two words
                             swapWords(appCore);
                             break;
                         case 3:
+                            // Add a new empty line
                             appCore.addEmptyLine();
                             break;
                         case 4:
+                            // Remove last line
                             if (appCore.isEmpty()) {
                                 System.err.println("There are no lines!");
                             } else if (!appCore.isLastLineEmpty()) {
@@ -80,9 +96,11 @@ public final class CliApp {
                             }
                             break;
                         case 5:
+                            // Select another file
                             loop = false;
                             break;
                         case 6:
+                            // Exit
                             // Writes down the new content and closes the file.
                             appCore.close();
                             return;
@@ -107,6 +125,10 @@ public final class CliApp {
         }
     }
 
+    /**
+     * Performs the line swapping operation.
+     * @param appCore The AppCore's instance holding the current session.
+     */
     private static void swapLines(AppCore appCore) {
         if (appCore.lineCount() < 2) {
             System.err.println("Not enough lines to perform a swap!");
@@ -121,6 +143,10 @@ public final class CliApp {
         appCore.swapLines(firstLine, secondLine);
     }
 
+    /**
+     * Performs the word swapping operation.
+     * @param appCore The AppCore's instance holding the current session.
+     */
     private static void swapWords(AppCore appCore) {
         {
             int totalWordCount = 0;
@@ -151,6 +177,12 @@ public final class CliApp {
         appCore.swapWords(firstLine - 1, firstWord - 1, secondLine - 1, secondWord - 1);
     }
 
+    /**
+     * Makes Console Line Interface (CLI) dialog asking whether the user wishes to continue using the program with another file.
+     * @param message A reference to a string containing an additional message to be printed.
+     * If it's a null reference, then no additional messages are printed.
+     * @return True when the user wishes to continue. Otherwise, false.
+     */
     private static boolean continueUsing(String message) {
         if (message != null) {
             if (!message.isEmpty()) {
@@ -166,7 +198,8 @@ public final class CliApp {
 
     /**
      * Makes Console Line Interface (CLI) dialog with "Yes" and "No" answers.
-     * @param message
+     * @param message A reference to a string containing a message to be printed.
+     * If it's a null reference, then no messages are printed.
      * @return Returns true when "Yes" is selected and false when "No" is selected.
      */
     public static boolean dialog(String message) {
@@ -192,6 +225,10 @@ public final class CliApp {
         }
     }
 
+    /**
+     * A helper function for number input. It requires the user to enter a positive integer.
+     * @return The parsed positive integer.
+     */
     private static int inputNumber() {
         do {
             try {
@@ -202,6 +239,12 @@ public final class CliApp {
         } while (true);
     }
 
+    /**
+     * A helper function for for line number input.
+     * @param appCore The AppCore's instance holding the current session.
+     * @param line A reference to a string containing the requested line's name in ordering (e.g.: first, second, etc.).
+     * @return The parsed, bound checked, line number.
+     */
     private static int inputLineNumber(AppCore appCore, String line) {
         int index;
 
@@ -226,6 +269,13 @@ public final class CliApp {
         return index;
     }
 
+    /**
+     * A helper function for for line number input.
+     * @param appCore The AppCore's instance holding the current session.
+     * @param line A line number, that is assumed to be bound checked, for which the word number is inputted.
+     * @param word A reference to a string containing the requested line's name in ordering (e.g.: first, second, etc.).
+     * @return The parsed, bound checked, word number.
+     */
     private static int inputWordNumber(AppCore appCore, int line, String word) {
         int index;
 
