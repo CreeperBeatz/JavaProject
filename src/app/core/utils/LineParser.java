@@ -14,7 +14,7 @@ final class LineParser {
 	private static final Pattern wordPattern;
 	
 	static {
-		wordPattern = Pattern.compile("\\d*(?!\\d)\\w+");
+		wordPattern = Pattern.compile("\\d*(?!\\d)\\w+", Pattern.UNICODE_CASE);
 	}
 
 	/**
