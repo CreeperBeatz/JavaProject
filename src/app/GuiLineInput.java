@@ -11,7 +11,7 @@ final class GuiLineInput {
 		super();
 	}
 
-	private static Integer showDialog(GuiApp app, String message, Integer[] options) {
+	private static Integer showDialog(GuiApp app, Object message, Integer[] options) {
 		return (Integer) JOptionPane.showInputDialog(
 			app,
 			message,
