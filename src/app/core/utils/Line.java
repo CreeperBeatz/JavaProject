@@ -325,7 +325,7 @@ public final class Line {
 		// Adjust the offsets of the words after the word, if any.
 		// The words' offsets before it will stay correct.
 		for (int z = otherWordIndex + 1; z < otherLine.words.length; ++z) {
-			words[z].offsetWord(-delta);
+			otherLine.words[z].offsetWord(-delta);
 		}
 
 		ownWord.swapLengths(otherWord);
